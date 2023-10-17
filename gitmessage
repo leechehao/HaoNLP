@@ -1,0 +1,84 @@
+# Summary
+######################## summary line's width -> #
+[Verb] Noun
+
+# Describe (Optional)
+############################################# describe line's width -> #
+[Describe]
+
+# End of Commit
+########################################################################
+# 說明:
+#   
+#   此 commit template 參考自 joelparkerhenderson/git-commit-message 。
+#
+#   需使用指定的 hook/commit-msg.sample 檢查排版內容。
+#
+#   欄位之間需留單行空白行。
+#
+# 欄位說明:
+#     
+#   Summary:
+#
+#       此次 commit 的概述，採用 [Verb] Noun 描述。
+#
+#       每個 commit 只能存在一個 summary ，若此次 commit 超過一個以
+#       上的 summary ，基於 atomic commits ，應切割成兩次 commit 。
+#
+#       summary 總長度不得超過 50 字元。
+#
+#       Verb 清單:
+#
+#           Add: 新增項目
+#               e.g. 功能、測試
+#           
+#           Drop: 刪除項目
+#               e.g. 功能、測試
+#
+#           Fix: 修復問題
+#               e.g. Bug、錯字、例外處理、誤述
+#
+#           Bump: 增加版本號
+#
+#           Make: 改變 build process、tools
+#
+#           Start: 開啟項目
+#               e.g. 啟動 feaure flag
+#
+#           Stop: 關閉項目
+#               e.g. 關閉 feaure flag
+#
+#           Optimize: 僅對於效能修改
+#               e.g. 加速程式碼
+#
+#           Document: 僅對於文件修改
+#               e.g. README
+#
+#           Refactor: 僅對於架構重構
+#
+#           Reformat: 僅對於程式碼格式修改
+#               e.g. 縮排、刪減空白行
+#
+#   Describe:
+#       
+#       summary 的詳細說明，此為選填。
+#
+#       describe 單行超過 72 字元時必須換行。
+#
+#       describe 的內文從 [Describe] 下一行開始。
+#
+########################################################################
+# 範例:
+#
+# # Summary
+# ####################### summary line's width -> #
+# [Add] Timsort 混合排序
+#
+# # Describe (Optional)
+# ############################################# describe line's width -> #
+# [Describe]
+# Timsort 是一種混合穩定的排序算法，源自合併排序和插入排序，旨在較好地處理
+# 真實世界中各種各樣的數據。
+#
+# # End of Commit
+########################################################################
