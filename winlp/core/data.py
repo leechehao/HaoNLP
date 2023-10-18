@@ -8,6 +8,12 @@ import transformers
 from torch.utils.data import DataLoader
 
 
+TRAIN = "train"
+VALIDATION = "validation"
+TEST = "test"
+LABELS = "labels"
+
+
 class DataModule(pl.LightningDataModule):
     def __init__(
         self,
@@ -22,7 +28,7 @@ class DataModule(pl.LightningDataModule):
         self.pretrained_model_name_or_path = pretrained_model_name_or_path
         self.max_length = max_length
         self.batch_size = batch_size
-        self.num_workers = num_workers if num_workers is not None else os.cpu_count() / 2
+        self.num_workers = num_workers if num_workers is not None else os.cpu_count() // 2
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
 
     def setup(self, stage: str) -> None:
@@ -30,17 +36,17 @@ class DataModule(pl.LightningDataModule):
         for split in dataset:
             dataset[split] = self.process_data(dataset[split], split)
 
-        dataset.set_format(type="torch", columns=self.tokenizer.model_input_names + ["lables"])
+        dataset.set_format(type="torch", columns=self.tokenizer.model_input_names + [LABELS])
         self.dataset = dataset
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
         return split_dataset
 
     def train_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset["train"], batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+        return DataLoader(self.dataset[TRAIN], batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
 
     def val_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset["validation"], batch_size=self.batch_size, num_workers=self.num_workers)
+        return DataLoader(self.dataset[VALIDATION], batch_size=self.batch_size, num_workers=self.num_workers)
 
     def test_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset["test"], batch_size=self.batch_size, num_workers=self.num_workers)
+        return DataLoader(self.dataset[TEST], batch_size=self.batch_size, num_workers=self.num_workers)
