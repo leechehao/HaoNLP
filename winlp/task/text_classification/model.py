@@ -1,94 +1,45 @@
-from winlp.core.model import *
+from typing import Any, Type
 
-# class TextClassificationModule():
-#     def __init__(self, base_model, num_labels):
-#         super().__init__()
-#         self.model = DistilBertForSequenceClassification.from_pretrained(base_model, num_labels=num_labels)
-#         self.train_loss = []
-#         self.val_loss = []
-#         self.val_preds = []
-#         self.val_labels = []
-#         self.test_preds = []
-#         self.test_labels = []
+import torch
+import transformers
+from transformers.models.auto.auto_factory import _BaseAutoModelClass
+from sklearn.metrics import classification_report
 
-#     def setup(self, _config, stage=None):
-#         self.logger.log_hyperparams(_config)
+from winlp.core import Module
 
-#     def forward(self, input_ids, attention_mask):
-#         return self.model(input_ids, attention_mask)
+LABELS = "labels"
 
-#     def configure_optimizers(self, lr):
-#         return torch.optim.AdamW(self.model.parameters(), lr)
 
-#     def training_step(self, batch, batch_idx):
-#         input_ids = batch["input_ids"]
-#         attention_mask = batch["attention_mask"]
-#         labels = batch["label"]
-#         logits = self.model(input_ids, attention_mask).logits
+class TextClassificationModule(Module):
+    def __init__(
+        self,
+        pretrained_model_name_or_path: str,
+        num_labels: int,
+        downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForSequenceClassification,
+        **kwargs,
+    ) -> None:
+        super().__init__(downstream_model_type, pretrained_model_name_or_path, num_labels, **kwargs)
+        self.save_hyperparameters()
 
-#         train_loss = torch.nn.functional.cross_entropy(logits, labels)
-#         self.train_loss.append(train_loss)
+    def forward(self, batch: Any) -> None:
+        return self.model(**batch)
 
-#         self.log("train_loss", train_loss.item(), on_epoch=True)
+    def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
+        loss = self.model(**batch).loss
+        self.log("train_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
+        return loss
 
-#         return train_loss
+    def common_step(self, prefix: str, batch: Any) -> torch.Tensor:
+        loss, logits = self.model(**batch)[:2]
+        preds = torch.argmax(logits, dim=1)
+        accuracy = classification_report(batch[LABELS].cpu(), preds.cpu(), output_dict=True, zero_division=0)["accuracy"]
+
+        self.log(f"{prefix}_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
+        self.log(f"{prefix}_accuracy", accuracy, prog_bar=True, on_step=True, on_epoch=True)
+
+    def validation_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
+        self.common_step("val", batch)
+
+    def test_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
+        self.common_step("test", batch)
     
-#     def on_train_epoch_end(self, _run):
-#         self.logger.log_metrics({"train_loss_epoch_mc": torch.stack(self.train_loss).mean().item()}, self.current_epoch)
-#         # self.logger.experiment.log_metric(run_id=mlf_logger.run_id, 
-#         #                                   key="train_loss_epoch_mc", 
-#         #                                   value=torch.stack(self.train_loss).mean().item(), 
-#         #                                   step=self.current_epoch)
-#         _run.log_scalar("train_loss_epoch_mc", torch.stack(self.train_loss).mean().item())
-#         self.train_loss.clear()
-
-#     def validation_step(self, batch, batch_idx):
-#         input_ids = batch["input_ids"]
-#         attention_mask = batch["attention_mask"]
-#         labels = batch["label"]
-#         logits = self.model(input_ids, attention_mask).logits
-
-#         val_loss = torch.nn.functional.cross_entropy(logits, labels)
-#         self.val_loss.append(val_loss)
-
-#         self.log("val_loss", val_loss.item(), on_epoch=True)
-
-#         predictions = torch.argmax(logits, dim=1)
-#         self.val_preds.extend(predictions.cpu())
-#         self.val_labels.extend(labels.cpu())
-
-#     def on_validation_epoch_end(self, _run):
-#         self.logger.log_metrics({"val_loss_epoch_mc": torch.stack(self.val_loss).mean().item()}, self.current_epoch)
-#         # self.logger.experiment.log_metric(run_id=mlf_logger.run_id, 
-#         #                                   key="val_loss_epoch_mc", 
-#         #                                   value=torch.stack(self.val_loss).mean().item(), 
-#         #                                   step=self.current_epoch)
-#         _run.log_scalar("val_loss_epoch_mc", torch.stack(self.val_loss).mean().item())
-#         self.val_loss.clear()
-
-#         self.logger.log_metrics({"val_acc_epoch": accuracy_score(self.val_preds, self.val_labels)}, self.current_epoch)
-#         # self.logger.experiment.log_metric(run_id=mlf_logger.run_id, 
-#         #                                   key="val_acc_epoch", 
-#         #                                   value=accuracy_score(self.val_preds, self.val_labels), 
-#         #                                   step=self.current_epoch)
-#         _run.log_scalar("val_acc_epoch", accuracy_score(self.val_preds, self.val_labels))
-#         self.val_preds.clear()
-#         self.val_labels.clear()
-
-#     def test_step(self, batch, batch_idx):
-#         input_ids = batch["input_ids"]
-#         attention_mask = batch["attention_mask"]
-#         labels = batch["label"]
-#         logits = self.model(input_ids, attention_mask).logits
-
-#         predictions = torch.argmax(logits, dim=1)
-#         self.test_preds.extend(predictions.cpu())
-#         self.test_labels.extend(labels.cpu())
-
-#     def on_test_epoch_end(self, _run):
-#         self.logger.log_metrics({"test_acc_epoch": accuracy_score(self.test_preds, self.test_labels)}, self.current_epoch)
-#         # self.logger.experiment.log_metric(run_id=mlf_logger.run_id, 
-#         #                                   key="test_acc_epoch", 
-#         #                                   value=accuracy_score(self.test_preds, self.test_labels), 
-#         #                                   step=self.current_epoch)
-#         _run.log_scalar("test_acc_epoch", accuracy_score(self.test_preds, self.test_labels))
