@@ -4,6 +4,7 @@ import torch
 import transformers
 import lightning.pytorch as pl
 import torchmetrics
+import mlflow
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 
 from winlp.core import Module
@@ -14,10 +15,15 @@ class TokenClassificationModule(Module):
         self,
         pretrained_model_name_or_path: str,
         num_labels: int,
+        monitor: str,
+        mode: str,
         downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForTokenClassification,
         **kwargs,
     ) -> None:
-        super().__init__(downstream_model_type, pretrained_model_name_or_path, num_labels, **kwargs)
+        super().__init__(downstream_model_type, pretrained_model_name_or_path, num_labels, monitor, mode, **kwargs)
+
+    def forward(self, batch):
+        return self.model(**batch)
 
     def configure_metrics(self) -> None:
         self.prec = torchmetrics.Precision(task="multiclass", num_classes=self.num_labels)
@@ -51,12 +57,3 @@ class TokenClassificationModule(Module):
         predictions = predictions[labels != -100]
         labels = labels[labels != -100]
         return {f"{mode}_{k}": metric(predictions, labels) for k, metric in self.metrics.items()}
-
-    def configure_callbacks(self) -> Union[Sequence[pl.callbacks.Callback], pl.callbacks.Callback]:
-        checkpoint_callback = pl.callbacks.ModelCheckpoint(
-            filename="ner-{val_f1:.3f}-{val_loss:.3f}-{train_loss:.3f}-{epoch:d}",
-            monitor="val_f1",
-            mode="max",
-            save_weights_only=True,
-        )
-        return [checkpoint_callback]
