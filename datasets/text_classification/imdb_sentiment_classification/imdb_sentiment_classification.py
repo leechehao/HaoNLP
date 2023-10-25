@@ -74,7 +74,7 @@ class IMDb(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             reader = csv.reader(f, delimiter=",")
             labels_mapping = {"neg": 0, "pos": 1}
-            for _id, row in enumerate(reader):
-                if _id == 0:
+            for id_, row in enumerate(reader):
+                if id_ == 0:
                     continue
-                yield _id, {"texts": row[0], "labels": labels_mapping.get(row[1])}
+                yield id_, {"texts": row[0], "labels": labels_mapping.get(row[1])}
