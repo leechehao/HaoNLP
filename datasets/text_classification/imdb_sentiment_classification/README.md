@@ -10,7 +10,7 @@ configs:
     path: "data/test.csv"
 ---
 
-# Chest CT 影像文字報告實體識別資料集
+# IMDb 電影評論資料集
 ## 儲存庫結構
 ```
 imdb_sentiment_classification/

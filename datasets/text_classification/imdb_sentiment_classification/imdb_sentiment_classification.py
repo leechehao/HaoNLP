@@ -1,5 +1,7 @@
-"""IMDb movie reviews dataset."""
+"""IMDb 電影評論資料集。"""
 
+
+from typing import List, Generator, Tuple, Dict
 
 import csv
 
@@ -24,19 +26,39 @@ _URLS = {
 class IMDbReviewsConfig(datasets.BuilderConfig):
     """建立 IMDbReviews 設定。"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
+        """
+        初始化 IMDbReviewsConfig。
+
+        Args:
+            **kwargs: 可變關鍵字參數。
+        """
         super(IMDbReviewsConfig, self).__init__(**kwargs)
 
 
 class IMDb(datasets.GeneratorBasedBuilder):
-    """IMDb movie reviews dataset."""
-    
+    """
+    IMDb 電影評論資料集。
+
+    此資料集包含 IMDb 上的電影評論，以及對應的情感標籤（正面或負面）。
+
+    Attributes:
+        VERSION (datasets.Version): 資料集的版本。
+        BUILDER_CONFIGS (list of IMDbReviewsConfig): 資料集的建構設定。
+    """
+
     VERSION = datasets.Version("1.0.0")
     BUILDER_CONFIGS = [
         IMDbReviewsConfig(name="imdb_sentiment_classification", version=VERSION, description="IMDb movie reviews dataset.")
     ]
 
-    def _info(self):
+    def _info(self) -> datasets.DatasetInfo:
+        """
+        返回資料集的基本資訊。
+
+        Returns:
+            datasets.DatasetInfo: 包含資料集的描述、引用、官網連結、授權、特徵和任務模板。
+        """
         features = datasets.Features(
             {
                 "texts": datasets.Value("string"),
@@ -52,7 +74,16 @@ class IMDb(datasets.GeneratorBasedBuilder):
             task_templates=[TextClassification(text_column="texts", label_column="labels")],
         )
 
-    def _split_generators(self, dl_manager):
+    def _split_generators(self, dl_manager) -> List[datasets.SplitGenerator]:
+        """
+        定義資料集的分割產生器。
+
+        Args:
+            dl_manager (datasets.DownloadManager): 用於下載和解壓縮的管理器。
+
+        Returns:
+            List[datasets.SplitGenerator]: 資料集各個分割的生成器。
+        """
         data_files = dl_manager.download_and_extract(_URLS)
         return [
             datasets.SplitGenerator(
@@ -69,7 +100,16 @@ class IMDb(datasets.GeneratorBasedBuilder):
             ),
         ]
 
-    def _generate_examples(self, filepath):
+    def _generate_examples(self, filepath) -> Generator[Tuple[int, Dict[str, int]], None, None]:
+        """
+        生成資料集範例。
+
+        Args:
+            filepath (str): 資料檔案的路徑。
+
+        Yields:
+            Tuple[int, Dict[str, int]]: 包含範例的 id 和內容的元組。
+        """
         logger.info("⏳ Generating examples from = %s", filepath)
         with open(filepath, encoding="utf-8") as f:
             reader = csv.reader(f, delimiter=",")
