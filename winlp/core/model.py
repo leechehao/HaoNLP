@@ -94,7 +94,7 @@ class Module(pl.LightningModule):
         Returns:
             Union[Sequence[pl.callbacks.Callback], pl.callbacks.Callback]: 一個或多個回調函數。
         """
-        calback = MLflowModelCheckpoint(logger=self.logger, monitor=self.monitor, mode=self.mode)
+        calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode)
         return [calback]
 
 
@@ -104,17 +104,6 @@ class MLflowModelCheckpoint(pl.callbacks.ModelCheckpoint):
 
     主要功能是在訓練過程中選擇最佳模型檢查點，然後將該模型保存到 MLflow 中，以便進行後續的實驗追蹤和模型部署。
     """
-
-    def __init__(self, logger: MLFlowLogger, **kwargs):
-        """
-        初始化 MLflowModelCheckpoint。
-
-        Args:
-            logger (MLFlowLogger): 用於連接 MLflow 的 logger 實例。
-        """
-        super().__init__(**kwargs)
-        mlflow.set_experiment(experiment_id=logger.experiment_id)
-        mlflow.start_run(run_id=logger.run_id)
 
     def _save_checkpoint(self, trainer: pl.Trainer, filepath: str) -> None:
         """
