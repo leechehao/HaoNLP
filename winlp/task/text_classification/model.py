@@ -19,7 +19,7 @@ class TextClassificationModule(Module):
 
     Attributes:
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-        num_labels (int): 分類標籤的數量。
+        num_labels (int): 分類任務的標籤數量。
         monitor (str): 監控指標的名稱。
         mode (str): 監控模式，如 "min" 或 "max"。
         downstream_model_type (Type[_BaseAutoModelClass]): 預設使用的模型類型。
@@ -47,7 +47,7 @@ class TextClassificationModule(Module):
 
         Args:
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-            num_labels (int): 分類標籤的數量。
+            num_labels (int): 分類任務的標籤數量。
             monitor (str): 監控指標的名稱。
             mode (str): 監控模式，如 "min" 或 "max"。
             downstream_model_type (Type[_BaseAutoModelClass], optional): 使用的模型類型，預設為 AutoModelForSequenceClassification。

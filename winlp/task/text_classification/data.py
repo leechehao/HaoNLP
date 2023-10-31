@@ -15,13 +15,13 @@ class TextClassificationDataModule(DataModule):
     此模組提供了文本分類資料的處理功能，封裝了資料的預處理與獲取標籤數量的方法。
 
     Attributes:
-        dataset_name (str): 資料集的名稱。
+        dataset_name (str): 資料集的名稱。遵從 Hugging Face dataset 格式。
+        num_labels (int): 標籤數量。
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
         **kwargs: 其他關鍵字參數。
 
     Methods:
         process_data: 對指定的資料集進行預處理。
-        num_labels: 返回資料集的標籤數量。
     """
 
     def __init__(
