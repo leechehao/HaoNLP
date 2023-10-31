@@ -1,0 +1,6 @@
+defaults:
+  - dataset: default
+  - task : default
+  - trainer: default
+
+seed: 1314

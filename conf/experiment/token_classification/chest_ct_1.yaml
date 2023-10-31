@@ -1,0 +1,14 @@
+# @package _global_
+defaults:
+  - override /dataset: token_classification/chest_ct_ner.yaml
+  - override /task: token_classification
+  - _self_
+
+task:
+  monitor: val_f1
+  mode: max
+trainer:
+  logger:
+    experiment_name: Chest_CT_NER
+    run_name: run_1
+    tracking_uri: /home/bryant/MyMLOps/exp

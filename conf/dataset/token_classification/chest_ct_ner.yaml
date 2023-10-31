@@ -1,0 +1,6 @@
+# @package dataset
+defaults:
+  - token_classification/default  # conf/dataset/token_classification/default.yaml
+  
+dataset_name: /home/bryant/MyMLOps/datasets/token_classification/chest_ct_ner
+num_labels: 17

@@ -24,6 +24,7 @@ class TokenClassificationDataModule(DataModule):
     def __init__(
         self,
         dataset_name: str,
+        num_labels: int,
         pretrained_model_name_or_path: str,
         label_all_tokens: bool = False,
         **kwargs,
@@ -33,10 +34,11 @@ class TokenClassificationDataModule(DataModule):
 
         Args:
             dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
+            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_all_tokens (bool, optional): 是否標記所有的 tokens。預設為 False。
         """
-        super().__init__(dataset_name, pretrained_model_name_or_path, **kwargs)
+        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path, **kwargs)
         self.label_all_tokens = label_all_tokens
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
@@ -57,18 +59,12 @@ class TokenClassificationDataModule(DataModule):
             max_length=self.max_length,
             label_all_tokens=self.label_all_tokens,
         )
-        split_dataset = split_dataset.map(convert_to_features, batched=True, num_proc=self.num_workers if split == "train" else None)
+        split_dataset = split_dataset.map(
+            convert_to_features,
+            batched=True,
+            num_proc=self.num_workers if split == "train" else None,
+        )
         return split_dataset
-
-    @property
-    def num_labels(self) -> int:
-        """
-        返回標籤的數量。
-
-        Returns:
-            int: 標籤的數量。
-        """
-        return len(self.dataset[TRAIN].features[NER_TAGS].feature.names)
 
     @staticmethod
     def convert_to_features(

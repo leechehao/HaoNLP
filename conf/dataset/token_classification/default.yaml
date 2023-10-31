@@ -1,0 +1,6 @@
+# @package dataset
+defaults:
+  - /dataset/default  # conf/dataset/default.yaml
+
+_target_: winlp.task.token_classification.TokenClassificationDataModule
+label_all_tokens: False

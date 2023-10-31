@@ -25,6 +25,7 @@ class DataModule(pl.LightningDataModule):
     def __init__(
         self,
         dataset_name: str,
+        num_labels: int,
         pretrained_model_name_or_path: str,
         max_length: int = 512,
         batch_size: int = 16,
@@ -35,6 +36,7 @@ class DataModule(pl.LightningDataModule):
 
         Args:
             dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
+            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             max_length (int, optional): 在 tokenization 過程中序列的最大長度。預設為 512。
             batch_size (int, optional): DataLoader 中每批次加載的數據樣本數量。預設為 16。
@@ -43,6 +45,7 @@ class DataModule(pl.LightningDataModule):
         super().__init__()
         self.save_hyperparameters()
         self.dataset_name = dataset_name
+        self.num_labels = num_labels
         self.pretrained_model_name_or_path = pretrained_model_name_or_path
         self.max_length = max_length
         self.batch_size = batch_size

@@ -27,6 +27,7 @@ class TextClassificationDataModule(DataModule):
     def __init__(
         self,
         dataset_name: str,
+        num_labels: int,
         pretrained_model_name_or_path: str,
         **kwargs,
     ) -> None:
@@ -35,10 +36,11 @@ class TextClassificationDataModule(DataModule):
 
         Args:
             dataset_name (str): 資料集的名稱。遵從 Hugging Face dataset 格式。
+            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             **kwargs: 其他關鍵字參數。
         """
-        super().__init__(dataset_name, pretrained_model_name_or_path=pretrained_model_name_or_path, **kwargs,)
+        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path=pretrained_model_name_or_path, **kwargs,)
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
         """
@@ -66,13 +68,3 @@ class TextClassificationDataModule(DataModule):
             num_proc=self.num_workers if split == TRAIN else None,
         )
         return split_dataset
-
-    @property
-    def num_labels(self) -> int:
-        """
-        返回資料集的標籤數量。
-
-        Returns:
-            int: 標籤的數量。
-        """
-        return self.dataset[TRAIN].features[LABELS].num_classes

@@ -1,0 +1,10 @@
+_target_: lightning.pytorch.Trainer
+accelerator: auto
+devices: auto
+deterministic: True
+max_epochs: 1
+logger:
+  _target_: lightning.pytorch.loggers.MLFlowLogger
+  experiment_name: ???
+  run_name: ???
+  tracking_uri: ???
