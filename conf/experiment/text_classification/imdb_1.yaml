@@ -18,3 +18,7 @@ trainer:
     experiment_name: "IMDb-Text-Classification"
     run_name: "distilbert-base-uncased-1"
     tracking_uri: "./mlflow"
+
+test: True
+
+run_id: run_id

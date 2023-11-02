@@ -59,12 +59,20 @@ class DataModule(pl.LightningDataModule):
         Args:
             stage (str): `fit`、`validate`、`test` 或 `predict`。
         """
-        dataset = datasets.load_dataset(path=self.dataset_name)
-        for split in dataset:
-            dataset[split] = self.process_data(dataset[split], split)
+        if stage == "fit":
+            dataset_list = datasets.load_dataset(path=self.dataset_name, split=[TRAIN, VALIDATION])
+            dataset_dict = datasets.DatasetDict({TRAIN: dataset_list[0], VALIDATION: dataset_list[1]})
+        elif stage=="test":
+            dataset = datasets.load_dataset(path=self.dataset_name, split=TEST)
+            dataset_dict = datasets.DatasetDict({TEST: dataset})
+        else:
+            dataset_dict = datasets.load_dataset(path=self.dataset_name)
 
-        dataset.set_format(type="torch", columns=self.tokenizer.model_input_names + [LABELS])
-        self.dataset = dataset
+        for split in dataset_dict:
+            dataset_dict[split] = self.process_data(dataset_dict[split], split)
+
+        dataset_dict.set_format(type="torch", columns=self.tokenizer.model_input_names + [LABELS])
+        self.dataset = dataset_dict
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
         """

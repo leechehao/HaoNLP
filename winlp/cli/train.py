@@ -26,10 +26,14 @@ def main(cfg: DictConfig) -> None:
     mlf_logger = instantiate(cfg.trainer.logger)
     utils.mlflow_setup(cfg.trainer.logger.tracking_uri, mlf_logger.experiment_id, mlf_logger.run_id)
     utils.log_config(cfg, HydraConfig.get(), artifact_file="config.yaml")
+    
     trainer = instantiate(cfg.trainer, logger=mlf_logger)
 
     trainer.fit(model, data_module)
 
+    if cfg.test:
+        logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
+        trainer.test(logged_model, data_module)
 
 if __name__ == "__main__":
     # python winlp/cli/train.py +experiment=token_classification/chest_ct_1
