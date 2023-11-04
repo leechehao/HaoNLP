@@ -3,3 +3,4 @@ defaults:
   - /dataset/default  # conf/dataset/default.yaml
 
 _target_: winlp.task.text_classification.TextClassificationDataModule
+label_column_name: labels

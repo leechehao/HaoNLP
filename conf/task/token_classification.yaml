@@ -3,3 +3,4 @@ defaults:
   - default
 
 _target_:  winlp.task.token_classification.TokenClassificationModule
+label_all_tokens: False

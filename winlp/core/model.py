@@ -1,4 +1,4 @@
-from typing import Dict, Sequence, Tuple, Type, Union
+from typing import Optional, Sequence, Tuple, Type
 
 from weakref import proxy
 
@@ -7,7 +7,6 @@ import transformers
 import mlflow
 from torch.optim import Optimizer, AdamW
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
-from lightning.pytorch.loggers import MLFlowLogger
 
 
 class Module(pl.LightningModule):
@@ -22,6 +21,7 @@ class Module(pl.LightningModule):
         downstream_model_type: Type[_BaseAutoModelClass],
         pretrained_model_name_or_path: str,
         num_labels: int,
+        label_list: list[str],
         monitor: str,
         mode: str,
         learning_rate: float = 1e-3,
@@ -35,6 +35,7 @@ class Module(pl.LightningModule):
             downstream_model_type (Type[_BaseAutoModelClass]): 下游任務模型的類型。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             num_labels (int): 分類任務的標籤數量。
+            label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
             mode (str): 監控指標的模式，例如 `min`、`max`。
             learning_rate (float, optional): 學習率。預設為 1e-3。
@@ -43,17 +44,21 @@ class Module(pl.LightningModule):
         """
         super().__init__()
         self.save_hyperparameters()
-        self.pretrained_model_name_or_path = pretrained_model_name_or_path
+        self.label_list = label_list
         self.model = downstream_model_type.from_pretrained(
             pretrained_model_name_or_path,
             num_labels=num_labels,
+            id2label=self.id2label,
+            label2id=self.label2id,
         )
+        self.tokenizer = transformers.AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
         self.num_labels = num_labels
         self.monitor = monitor
         self.mode = mode
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
         self.warmup_ratio = warmup_ratio
+        self._hf_pipeline = None
 
     def setup(self, stage: str) -> None:
         """
@@ -62,7 +67,6 @@ class Module(pl.LightningModule):
         Args:
             stage (str): 當前的訓練階段。
         """
-        # self.logger.log_hyperparams()  # 待補 hydra model_config
         self.configure_metrics()
 
     def configure_metrics(self) -> None:
@@ -71,7 +75,52 @@ class Module(pl.LightningModule):
         """
         pass
 
-    def configure_optimizers(self) -> Tuple[Sequence[Optimizer], Sequence[Dict]]:
+    @property
+    def hf_pipeline_task(self) -> Optional[transformers.pipeline]:
+        """
+        覆寫以配置用於預測的 pipeline。
+        """
+        return None
+
+    @property
+    def id2label(self) -> dict:
+        return {i: tag for i, tag in enumerate(self.label_list)}
+
+    @property
+    def label2id(self) -> dict:
+        return {tag: i for i, tag in enumerate(self.label_list)}
+
+    @property
+    def hf_pipeline(self):
+        """
+        覆寫以定義要使用的 Hugging Face pipeline。
+        """
+        if self._hf_pipeline is None:
+            if self.hf_pipeline_task is not None:
+                self._hf_pipeline = self.hf_pipeline_task
+            else:
+                raise NotImplementedError("此模型未定義任何 pipeline。")
+        return self._hf_pipeline
+
+    @hf_pipeline.setter
+    def hf_pipeline(self, pipeline: transformers.pipeline):
+        self._hf_pipeline = pipeline
+
+    def hf_predict(self, inputs, *args, **kwargs):
+        """
+        Hugging Face pipeline，供預測使用。
+
+        可輸入之額外參數 num_workers、batch_size。
+
+        Args:
+            inputs (_type_): 待預測的輸入。
+
+        Returns:
+            _type_: 預測結果。
+        """
+        return self.hf_pipeline(inputs, *args, **kwargs)
+
+    def configure_optimizers(self) -> Tuple[Sequence[Optimizer], Sequence[dict]]:
         """
         配置用於訓練模型的優化器和學習率調度器。
 
@@ -87,7 +136,7 @@ class Module(pl.LightningModule):
         scheduler = {"scheduler": self.scheduler, "interval": "step", "frequency": 1}
         return [self.optimizer], [scheduler]
 
-    def configure_callbacks(self) -> Union[Sequence[pl.callbacks.Callback], pl.callbacks.Callback]:
+    def configure_callbacks(self) -> Sequence[pl.callbacks.Callback] | pl.callbacks.Callback:
         """
         配置訓練過程中使用的回調函數。
 

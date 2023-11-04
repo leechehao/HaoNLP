@@ -1,4 +1,4 @@
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 import torch
 import transformers
@@ -17,8 +17,10 @@ class TokenClassificationModule(Module):
         self,
         pretrained_model_name_or_path: str,
         num_labels: int,
+        label_list: list[str],
         monitor: str,
         mode: str,
+        label_all_tokens: bool = False,
         downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForTokenClassification,
         **kwargs,
     ) -> None:
@@ -28,11 +30,23 @@ class TokenClassificationModule(Module):
         Args:
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             num_labels (int): 分類任務的標籤數量。
+            label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
             mode (str): 監控指標的模式，例如 `min`、`max`。
+            label_all_tokens (bool, optional): 若為 True，則對所有 subtoken（例如，tokenize 時）進行標記。預設為 False，即僅對第一個 subtoken 進行標記。
             downstream_model_type (Type[_BaseAutoModelClass], optional): 下游任務模型的類型。預設為 `transformers.  AutoModelForTokenClassification`
         """
-        super().__init__(downstream_model_type, pretrained_model_name_or_path, num_labels, monitor, mode, **kwargs)
+        super().__init__(
+            downstream_model_type,
+            pretrained_model_name_or_path,
+            num_labels,
+            label_list,
+            monitor,
+            mode,
+            **kwargs,
+        )
+        self.label_all_tokens = label_all_tokens
+        self.best_metric = float("-inf") if mode == "max" else float("inf")
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.TokenClassifierOutput:
         """
@@ -104,6 +118,12 @@ class TokenClassificationModule(Module):
         """
         return self.common_step("val", batch)
 
+    def on_validation_epoch_end(self):
+        current_metric = self.trainer.callback_metrics[self.monitor].item()
+        if (self.mode == "min" and current_metric < self.best_metric) or (self.mode == "max" and current_metric > self.best_metric):
+            self.best_metric = current_metric
+        self.log(f"best_{self.monitor}", self.best_metric)
+
     def test_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
         """
         測試過程中的一個測試步驟。
@@ -117,7 +137,7 @@ class TokenClassificationModule(Module):
         """
         return self.common_step("test", batch)
 
-    def compute_metrics(self, predictions: torch.Tensor, labels: torch.Tensor, mode="val") -> Dict[str, torch.Tensor]:
+    def compute_metrics(self, predictions: torch.Tensor, labels: torch.Tensor, mode="val") -> dict[str, torch.Tensor]:
         """
         計算度量指標。
 
@@ -127,8 +147,18 @@ class TokenClassificationModule(Module):
             mode (str, optional): 計算模式。預設為 `val`.
 
         Returns:
-            Dict[str, torch.Tensor]: 包含度量指標結果的字典。
+            dict[str, torch.Tensor]: 包含度量指標結果的字典。
         """
         predictions = predictions[labels != -100]
         labels = labels[labels != -100]
         return {f"{mode}_{k}": metric(predictions, labels) for k, metric in self.metrics.items()}
+
+    @property
+    def hf_pipeline_task(self):
+        aggregation_strategy = "average" if self.label_all_tokens else "first"
+        return transformers.TokenClassificationPipeline(
+            model=self.model,
+            tokenizer=self.tokenizer,
+            device=self.device,
+            aggregation_strategy=aggregation_strategy,
+        )

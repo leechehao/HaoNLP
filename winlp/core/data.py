@@ -27,6 +27,7 @@ class DataModule(pl.LightningDataModule):
         dataset_name: str,
         num_labels: int,
         pretrained_model_name_or_path: str,
+        label_column_name: str,
         max_length: int = 512,
         batch_size: int = 16,
         num_workers: Optional[int] = None,
@@ -38,6 +39,7 @@ class DataModule(pl.LightningDataModule):
             dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
             num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
+            label_column_name (str): 資料集裡標籤的欄位名稱。
             max_length (int, optional): 在 tokenization 過程中序列的最大長度。預設為 512。
             batch_size (int, optional): DataLoader 中每批次加載的數據樣本數量。預設為 16。
             num_workers (Optional[int], optional): DataLoader 用於加載數據的工作進程數。若為 None，則自動設置為機器 CPU 核心數的一半。預設為 None。
@@ -47,10 +49,12 @@ class DataModule(pl.LightningDataModule):
         self.dataset_name = dataset_name
         self.num_labels = num_labels
         self.pretrained_model_name_or_path = pretrained_model_name_or_path
+        self.label_column_name = label_column_name
         self.max_length = max_length
         self.batch_size = batch_size
         self.num_workers = num_workers if num_workers is not None else os.cpu_count() // 2
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
+        self.label_list: Optional[list] = None
 
     def setup(self, stage: str) -> None:
         """
@@ -62,6 +66,7 @@ class DataModule(pl.LightningDataModule):
         if stage == "fit":
             dataset_list = datasets.load_dataset(path=self.dataset_name, split=[TRAIN, VALIDATION])
             dataset_dict = datasets.DatasetDict({TRAIN: dataset_list[0], VALIDATION: dataset_list[1]})
+            self.label_list = dataset_dict[TRAIN].features[self.label_column_name].feature.names
         elif stage=="test":
             dataset = datasets.load_dataset(path=self.dataset_name, split=TEST)
             dataset_dict = datasets.DatasetDict({TEST: dataset})

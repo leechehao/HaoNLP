@@ -2,7 +2,7 @@ import hydra
 import mlflow
 import torch
 import lightning.pytorch as pl
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
 
@@ -14,26 +14,35 @@ torch.set_float32_matmul_precision("high")
 
 @hydra.main(version_base=None, config_path="../../conf", config_name="config")
 def main(cfg: DictConfig) -> None:
-    # print(OmegaConf.to_yaml(cfg))
+    # ===== 檢查參數缺失值 =====
     utils.check_missing_value(cfg)
 
+    # ===== 設定種子 =====
     pl.seed_everything(cfg.seed, workers=True)
 
+    # ===== 建立資料模組 =====
     data_module = instantiate(cfg.dataset)
+    data_module.setup("fit")
 
-    model = instantiate(cfg.task, num_labels=data_module.num_labels)
+    # ===== 建立模型 =====
+    model = instantiate(cfg.task, num_labels=data_module.num_labels, label_list=data_module.label_list)
 
+    # ===== 設定 MLflow logger =====
     mlf_logger = instantiate(cfg.trainer.logger)
     utils.mlflow_setup(cfg.trainer.logger.tracking_uri, mlf_logger.experiment_id, mlf_logger.run_id)
     utils.log_config(cfg, HydraConfig.get(), artifact_file="config.yaml")
-    
+
+    # ===== 設定 Trainer =====
     trainer = instantiate(cfg.trainer, logger=mlf_logger)
 
-    trainer.fit(model, data_module)
+    # ===== 訓練 =====
+    trainer.fit(model, data_module.train_dataloader(), data_module.val_dataloader())
 
+    # ===== 測試集評估 =====
     if cfg.test:
         logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
         trainer.test(logged_model, data_module)
+
 
 if __name__ == "__main__":
     # python winlp/cli/train.py +experiment=token_classification/chest_ct_1
