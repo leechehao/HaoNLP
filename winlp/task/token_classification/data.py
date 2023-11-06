@@ -111,3 +111,6 @@ class TokenClassificationDataModule(DataModule):
             labels.append(label_ids)
         tokenized_inputs[LABELS] = labels
         return tokenized_inputs
+
+    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list:
+        return dataset_dict[TRAIN].features[self.label_column_name].feature.names

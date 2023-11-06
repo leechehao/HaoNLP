@@ -66,8 +66,8 @@ class DataModule(pl.LightningDataModule):
         if stage == "fit":
             dataset_list = datasets.load_dataset(path=self.dataset_name, split=[TRAIN, VALIDATION])
             dataset_dict = datasets.DatasetDict({TRAIN: dataset_list[0], VALIDATION: dataset_list[1]})
-            self.label_list = dataset_dict[TRAIN].features[self.label_column_name].feature.names
-        elif stage=="test":
+            self.label_list = self.get_label_list(dataset_dict)
+        elif stage == "test":
             dataset = datasets.load_dataset(path=self.dataset_name, split=TEST)
             dataset_dict = datasets.DatasetDict({TEST: dataset})
         else:
@@ -103,3 +103,6 @@ class DataModule(pl.LightningDataModule):
 
     def test_dataloader(self) -> DataLoader:
         return DataLoader(self.dataset[TEST], batch_size=self.batch_size)
+
+    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list[str]:
+        raise NotImplementedError("必須在子類中實現提取資料集的標籤列表。")

@@ -68,3 +68,6 @@ class TextClassificationDataModule(DataModule):
             num_proc=self.num_workers if split == TRAIN else None,
         )
         return split_dataset
+
+    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list:
+        return dataset_dict[TRAIN].features[self.label_column_name].names
