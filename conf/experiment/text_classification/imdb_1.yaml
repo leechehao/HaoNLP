@@ -13,7 +13,7 @@ task:
   mode: min
   learning_rate: 2e-5
 trainer:
-  max_epochs: 5
+  max_epochs: 10
   logger:
     experiment_name: "IMDb-Text-Classification"
     run_name: "distilbert-base-uncased-1"

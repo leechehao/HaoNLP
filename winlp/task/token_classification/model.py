@@ -159,6 +159,7 @@ class TokenClassificationModule(Module):
         return transformers.TokenClassificationPipeline(
             model=self.model,
             tokenizer=self.tokenizer,
+            truncation=True,
             device=self.device,
             aggregation_strategy=aggregation_strategy,
         )

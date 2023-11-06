@@ -40,7 +40,7 @@ class TextClassificationDataModule(DataModule):
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             **kwargs: 其他關鍵字參數。
         """
-        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path=pretrained_model_name_or_path, **kwargs,)
+        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path, **kwargs)
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
         """

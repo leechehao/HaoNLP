@@ -9,7 +9,7 @@ torch.set_float32_matmul_precision("high")
 pl.seed_everything(42, workers=True)
 
 datamodule = TokenClassificationDataModule(
-    dataset_name="datasets/token_classification/chest_ct_ner",
+    dataset_name="datasets_hub/token_classification/chest_ct_ner",
     pretrained_model_name_or_path="prajjwal1/bert-tiny",
     max_length=256,
     batch_size=4,

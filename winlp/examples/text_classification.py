@@ -12,7 +12,7 @@ pl.seed_everything(0, workers=True)
 
 
 # 設置資料集
-dataset_name = "datasets/text_classification/imdb_sentiment_classification"
+dataset_name = "datasets_hub/text_classification/imdb_sentiment_classification"
 
 # 初始化資料模組
 datamodule = TextClassificationDataModule(

@@ -20,6 +20,7 @@ class TextClassificationModule(Module):
     Attributes:
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
         num_labels (int): 分類任務的標籤數量。
+        label_list (list[str]): 標籤名稱列表。
         monitor (str): 監控指標的名稱。
         mode (str): 監控模式，如 "min" 或 "max"。
         downstream_model_type (Type[_BaseAutoModelClass]): 預設使用的模型類型。
@@ -37,6 +38,7 @@ class TextClassificationModule(Module):
         self,
         pretrained_model_name_or_path: str,
         num_labels: int,
+        label_list: list[str],
         monitor: str,
         mode: str,
         downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForSequenceClassification,
@@ -48,12 +50,22 @@ class TextClassificationModule(Module):
         Args:
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             num_labels (int): 分類任務的標籤數量。
+            label_list (list[str]): 標籤名稱列表。
             monitor (str): 監控指標的名稱。
             mode (str): 監控模式，如 "min" 或 "max"。
             downstream_model_type (Type[_BaseAutoModelClass], optional): 使用的模型類型，預設為 AutoModelForSequenceClassification。
             **kwargs: 其他關鍵字參數。
         """
-        super().__init__(downstream_model_type, pretrained_model_name_or_path, num_labels, monitor, mode, **kwargs)
+        super().__init__(
+            downstream_model_type,
+            pretrained_model_name_or_path,
+            num_labels,
+            label_list,
+            monitor,
+            mode,
+            **kwargs,
+        )
+        self.best_metric = float("-inf") if mode == "max" else float("inf")
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.SequenceClassifierOutput:
         """
@@ -107,6 +119,12 @@ class TextClassificationModule(Module):
         """
         self.common_step("val", batch)
 
+    def on_validation_epoch_end(self):
+        current_metric = self.trainer.callback_metrics[self.monitor].item()
+        if (self.mode == "min" and current_metric < self.best_metric) or (self.mode == "max" and current_metric > self.best_metric):
+            self.best_metric = current_metric
+        self.log(f"best_{self.monitor}", self.best_metric)
+
     def test_step(self, batch: Any, batch_idx: int) -> None:
         """
         定義測試步驟。
@@ -116,4 +134,12 @@ class TextClassificationModule(Module):
             batch_idx (int): 批次索引。
         """
         self.common_step("test", batch)
-    
+
+    @property
+    def hf_pipeline_task(self):
+        return transformers.TextClassificationPipeline(
+            model=self.model,
+            tokenizer=self.tokenizer,
+            truncation=True,
+            device=self.device,
+        )
