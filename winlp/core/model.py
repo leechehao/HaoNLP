@@ -118,6 +118,7 @@ class Module(pl.LightningModule):
         Returns:
             _type_: 預測結果。
         """
+        self.eval()
         return self.hf_pipeline(inputs, *args, **kwargs)
 
     def configure_optimizers(self) -> Tuple[Sequence[Optimizer], Sequence[dict]]:
