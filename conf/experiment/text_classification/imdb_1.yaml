@@ -19,6 +19,6 @@ trainer:
     run_name: "distilbert-base-uncased-1"
     tracking_uri: "./mlflow"
 
-test: True
+test: False
 
 run_id: run_id

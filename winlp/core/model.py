@@ -146,6 +146,29 @@ class Module(pl.LightningModule):
         calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode)
         return [calback]
 
+    def save_to_onnx(self, model_onnx_path: str) -> None:
+        """
+        將模型轉成onnx格式
+
+        Args:
+            model_onnx_path (str): onnx模型存放路徑
+
+        Example:
+            ort_session = onnxruntime.InferenceSession("./test.onnx", providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
+        """
+        self.eval()
+        input_sample = {"batch": dict(self.tokenizer("test sentence!", return_tensors="pt"))}
+        dynamic_axes={
+            key: {0: "batch_size", 1: "sequence" } for key in input_sample["batch"]
+        }
+        self.to_onnx(
+            model_onnx_path,
+            dynamic_axes=dynamic_axes,
+            input_sample=input_sample,
+            input_names=list(input_sample["batch"].keys()),
+            export_params=True,
+        )
+
 
 class MLflowModelCheckpoint(pl.callbacks.ModelCheckpoint):
     """
