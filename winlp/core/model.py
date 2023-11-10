@@ -1,7 +1,9 @@
 from typing import Optional, Sequence, Tuple, Type
 
+import io
 from weakref import proxy
 
+import onnx
 import lightning.pytorch as pl
 import transformers
 import mlflow
@@ -147,28 +149,38 @@ class Module(pl.LightningModule):
         calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode)
         return [calback]
 
-    def save_to_onnx(self, model_onnx_path: str) -> None:
+    def log_onnx_model(self) -> None:
         """
-        將模型轉成onnx格式
-
-        Args:
-            model_onnx_path (str): onnx模型存放路徑
+        將模型轉成 onnx 格式並上傳 MLflow
 
         Example:
-            ort_session = onnxruntime.InferenceSession("./test.onnx", providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
+            (1):
+                ort_session = onnxruntime.InferenceSession("model.onnx", providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
+                ort_session.run(None, dict(tokenizer(test_sentence, return_tensors="np")))
+            (2):
+                onnx_model = mlflow.onnx.load_model(onnx_model_uri)
+                serialized_model = onnx_model.SerializeToString()
+                ort_session = onnxruntime.InferenceSession(serialized_model)
+                ort_session.run(None, dict(tokenizer(test_sentence, return_tensors="np")))
         """
         self.eval()
+        onnx_byte_stream = io.BytesIO()
+
         input_sample = {"batch": dict(self.tokenizer("test sentence!", return_tensors="pt"))}
         dynamic_axes={
             key: {0: "batch_size", 1: "sequence" } for key in input_sample["batch"]
         }
         self.to_onnx(
-            model_onnx_path,
-            dynamic_axes=dynamic_axes,
+            onnx_byte_stream,
             input_sample=input_sample,
-            input_names=list(input_sample["batch"].keys()),
             export_params=True,
+            input_names=list(input_sample["batch"].keys()),
+            dynamic_axes=dynamic_axes,
         )
+
+        onnx_byte_stream.seek(0)
+
+        mlflow.onnx.log_model(onnx_model=onnx.load_model(onnx_byte_stream), artifact_path="onnx_model")
 
 
 class MLflowModelCheckpoint(pl.callbacks.ModelCheckpoint):

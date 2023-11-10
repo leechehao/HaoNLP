@@ -38,12 +38,14 @@ def main(cfg: DictConfig) -> None:
     # ===== 訓練 =====
     trainer.fit(model, data_module.train_dataloader(), data_module.val_dataloader())
 
+    # ===== 上傳 onnx 模型 =====
+    logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
+    logged_model.log_onnx_model()
+
     # ===== 測試集評估 =====
     if cfg.test:
-        logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
         trainer.test(logged_model, data_module)
 
 
 if __name__ == "__main__":
-    # python winlp/cli/train.py +experiment=token_classification/chest_ct_1
     main()
