@@ -25,7 +25,6 @@ class DataModule(pl.LightningDataModule):
     def __init__(
         self,
         dataset_name: str,
-        num_labels: int,
         pretrained_model_name_or_path: str,
         label_column_name: str,
         max_length: int = 512,
@@ -37,7 +36,6 @@ class DataModule(pl.LightningDataModule):
 
         Args:
             dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
-            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_column_name (str): 資料集裡標籤的欄位名稱。
             max_length (int, optional): 在 tokenization 過程中序列的最大長度。預設為 512。
@@ -47,14 +45,13 @@ class DataModule(pl.LightningDataModule):
         super().__init__()
         self.save_hyperparameters()
         self.dataset_name = dataset_name
-        self.num_labels = num_labels
         self.pretrained_model_name_or_path = pretrained_model_name_or_path
         self.label_column_name = label_column_name
         self.max_length = max_length
         self.batch_size = batch_size
         self.num_workers = num_workers if num_workers is not None else os.cpu_count() // 2
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
-        self.label_list: Optional[list] = None
+        self._label_list: Optional[list[str]] = None
 
     def setup(self, stage: str) -> None:
         """
@@ -66,7 +63,6 @@ class DataModule(pl.LightningDataModule):
         if stage == "fit":
             dataset_list = datasets.load_dataset(path=self.dataset_name, split=[TRAIN, VALIDATION])
             dataset_dict = datasets.DatasetDict({TRAIN: dataset_list[0], VALIDATION: dataset_list[1]})
-            self.label_list = self.get_label_list(dataset_dict)
         elif stage == "test":
             dataset = datasets.load_dataset(path=self.dataset_name, split=TEST)
             dataset_dict = datasets.DatasetDict({TEST: dataset})
@@ -104,5 +100,12 @@ class DataModule(pl.LightningDataModule):
     def test_dataloader(self) -> DataLoader:
         return DataLoader(self.dataset[TEST], batch_size=self.batch_size)
 
-    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list[str]:
-        raise NotImplementedError("必須在子類中實現提取資料集的標籤列表。")
+    @property
+    def label_list(self) -> list[str]:
+        if self._label_list is None:
+            self.setup("fit")
+        return self._label_list
+    
+    @property
+    def num_labels(self) -> int:
+        return len(self.label_list)

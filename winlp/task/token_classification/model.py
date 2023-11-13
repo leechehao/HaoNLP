@@ -16,7 +16,6 @@ class TokenClassificationModule(Module):
     def __init__(
         self,
         pretrained_model_name_or_path: str,
-        num_labels: int,
         label_list: list[str],
         monitor: str,
         mode: str,
@@ -29,7 +28,6 @@ class TokenClassificationModule(Module):
 
         Args:
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-            num_labels (int): 分類任務的標籤數量。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
             mode (str): 監控指標的模式，例如 `min`、`max`。
@@ -39,7 +37,6 @@ class TokenClassificationModule(Module):
         super().__init__(
             downstream_model_type,
             pretrained_model_name_or_path,
-            num_labels,
             label_list,
             monitor,
             mode,

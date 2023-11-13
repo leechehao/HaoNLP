@@ -22,7 +22,6 @@ class Module(pl.LightningModule):
         self,
         downstream_model_type: Type[_BaseAutoModelClass],
         pretrained_model_name_or_path: str,
-        num_labels: int,
         label_list: list[str],
         monitor: str,
         mode: str,
@@ -36,7 +35,6 @@ class Module(pl.LightningModule):
         Args:
             downstream_model_type (Type[_BaseAutoModelClass]): 下游任務模型的類型。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-            num_labels (int): 分類任務的標籤數量。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
             mode (str): 監控指標的模式，例如 `min`、`max`。
@@ -49,12 +47,11 @@ class Module(pl.LightningModule):
         self.label_list = label_list
         self.model = downstream_model_type.from_pretrained(
             pretrained_model_name_or_path,
-            num_labels=num_labels,
+            num_labels=self.num_labels,
             id2label=self.id2label,
             label2id=self.label2id,
         )
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
-        self.num_labels = num_labels
         self.monitor = monitor
         self.mode = mode
         self.learning_rate = learning_rate
@@ -83,6 +80,10 @@ class Module(pl.LightningModule):
         覆寫以配置用於預測的 pipeline。
         """
         return None
+
+    @property
+    def num_labels(self) -> int:
+        return len(self.label_list)
 
     @property
     def id2label(self) -> dict:
@@ -167,8 +168,8 @@ class Module(pl.LightningModule):
         onnx_byte_stream = io.BytesIO()
 
         input_sample = {"batch": dict(self.tokenizer("test sentence!", return_tensors="pt"))}
-        dynamic_axes={
-            key: {0: "batch_size", 1: "sequence" } for key in input_sample["batch"]
+        dynamic_axes = {
+            key: {0: "batch_size", 1: "sequence"} for key in input_sample["batch"]
         }
         self.to_onnx(
             onnx_byte_stream,

@@ -25,7 +25,7 @@ def main(cfg: DictConfig) -> None:
     data_module.setup("fit")
 
     # ===== 建立模型 =====
-    model = instantiate(cfg.task, num_labels=data_module.num_labels, label_list=data_module.label_list)
+    model = instantiate(cfg.task, label_list=data_module.label_list)
 
     # ===== 設定 MLflow logger =====
     mlf_logger = instantiate(cfg.trainer.logger)

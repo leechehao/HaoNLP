@@ -24,7 +24,6 @@ class TokenClassificationDataModule(DataModule):
     def __init__(
         self,
         dataset_name: str,
-        num_labels: int,
         pretrained_model_name_or_path: str,
         label_column_name: str,
         label_all_tokens: bool = False,
@@ -35,12 +34,11 @@ class TokenClassificationDataModule(DataModule):
 
         Args:
             dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
-            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_column_name (str): 資料集裡標籤的欄位名稱。
             label_all_tokens (bool, optional): 是否標記所有的 tokens。預設為 False。
         """
-        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path, label_column_name, **kwargs)
+        super().__init__(dataset_name, pretrained_model_name_or_path, label_column_name, **kwargs)
         self.label_all_tokens = label_all_tokens
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
@@ -54,6 +52,9 @@ class TokenClassificationDataModule(DataModule):
         Returns:
             datasets.Dataset: 轉換後的數據集分割。
         """
+        if split == "train":
+            self._prepare_label_list(split_dataset)
+
         convert_to_features = partial(
             self.convert_to_features,
             tokenizer=self.tokenizer,
@@ -114,5 +115,5 @@ class TokenClassificationDataModule(DataModule):
         tokenized_inputs[LABELS] = labels
         return tokenized_inputs
 
-    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list:
-        return dataset_dict[TRAIN].features[self.label_column_name].feature.names
+    def _prepare_label_list(self, dataset: datasets.Dataset) -> None:
+        self._label_list = dataset.features[self.label_column_name].feature.names
