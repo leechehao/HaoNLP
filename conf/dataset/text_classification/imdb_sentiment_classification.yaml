@@ -3,4 +3,3 @@ defaults:
   - text_classification/default  # conf/dataset/token_classification/default.yaml
   
 dataset_name: /tmp2/ken/MyMLOps/datasets_hub/text_classification/imdb_sentiment_classification
-num_labels: 2

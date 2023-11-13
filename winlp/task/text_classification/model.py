@@ -19,7 +19,6 @@ class TextClassificationModule(Module):
 
     Attributes:
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-        num_labels (int): 分類任務的標籤數量。
         label_list (list[str]): 標籤名稱列表。
         monitor (str): 監控指標的名稱。
         mode (str): 監控模式，如 "min" 或 "max"。
@@ -37,7 +36,6 @@ class TextClassificationModule(Module):
     def __init__(
         self,
         pretrained_model_name_or_path: str,
-        num_labels: int,
         label_list: list[str],
         monitor: str,
         mode: str,
@@ -49,7 +47,6 @@ class TextClassificationModule(Module):
 
         Args:
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
-            num_labels (int): 分類任務的標籤數量。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 監控指標的名稱。
             mode (str): 監控模式，如 "min" 或 "max"。
@@ -59,7 +56,6 @@ class TextClassificationModule(Module):
         super().__init__(
             downstream_model_type,
             pretrained_model_name_or_path,
-            num_labels,
             label_list,
             monitor,
             mode,

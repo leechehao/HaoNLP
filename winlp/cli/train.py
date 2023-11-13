@@ -48,4 +48,5 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
+    # python winlp/cli/train.py +experiment=token_classification/chest_ct_1
     main()

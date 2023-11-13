@@ -24,5 +24,5 @@ def main(cfg: DictConfig) -> None:
     trainer.test(logged_model, data_module)
 
 if __name__ == "__main__":
-    # python winlp/cli/train.py +experiment=token_classification/chest_ct_1
+    # python winlp/cli/test.py +experiment=token_classification/chest_ct_1
     main()

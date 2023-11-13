@@ -16,7 +16,6 @@ class TextClassificationDataModule(DataModule):
 
     Attributes:
         dataset_name (str): 資料集的名稱。遵從 Hugging Face dataset 格式。
-        num_labels (int): 標籤數量。
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
         **kwargs: 其他關鍵字參數。
 
@@ -27,7 +26,6 @@ class TextClassificationDataModule(DataModule):
     def __init__(
         self,
         dataset_name: str,
-        num_labels: int,
         pretrained_model_name_or_path: str,
         label_column_name: str,
         **kwargs,
@@ -37,12 +35,11 @@ class TextClassificationDataModule(DataModule):
 
         Args:
             dataset_name (str): 資料集的名稱。遵從 Hugging Face dataset 格式。
-            num_labels (int): 標籤數量。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_column_name (str): 資料集裡標籤的欄位名稱。
             **kwargs: 其他關鍵字參數。
         """
-        super().__init__(dataset_name, num_labels, pretrained_model_name_or_path, label_column_name, **kwargs)
+        super().__init__(dataset_name, pretrained_model_name_or_path, label_column_name, **kwargs)
 
     def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
         """
@@ -57,6 +54,9 @@ class TextClassificationDataModule(DataModule):
         Returns:
             datasets.Dataset: 處理後的資料集。
         """
+        if split == "train":
+            self._prepare_label_list(split_dataset)
+
         split_dataset = split_dataset.map(
             lambda example: self.tokenizer(
                 example[TEXTS],
@@ -71,5 +71,5 @@ class TextClassificationDataModule(DataModule):
         )
         return split_dataset
 
-    def get_label_list(self, dataset_dict: datasets.DatasetDict) -> list:
-        return dataset_dict[TRAIN].features[self.label_column_name].names
+    def _prepare_label_list(self, dataset: datasets.Dataset) -> None:
+        self._label_list = dataset.features[self.label_column_name].names
