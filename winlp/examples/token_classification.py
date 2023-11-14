@@ -1,12 +1,12 @@
 import torch
-import lightning.pytorch as pl
+import lightning as L
 from lightning.pytorch.loggers import MLFlowLogger
 
 from winlp.task.token_classification import TokenClassificationDataModule, TokenClassificationModule
 
 
 torch.set_float32_matmul_precision("high")
-pl.seed_everything(42, workers=True)
+L.seed_everything(42, workers=True)
 
 datamodule = TokenClassificationDataModule(
     dataset_name="datasets_hub/token_classification/chest_ct_ner",
@@ -31,7 +31,7 @@ mlf_logger = MLFlowLogger(
     tracking_uri="/home/bryant/MyMLOps/exp",
 )
 
-trainer = pl.Trainer(
+trainer = L.Trainer(
     accelerator="auto",
     devices="auto",
     deterministic=True,

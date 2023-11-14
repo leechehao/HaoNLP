@@ -4,14 +4,14 @@ import io
 from weakref import proxy
 
 import onnx
-import lightning.pytorch as pl
+import lightning as L
 import transformers
 import mlflow
 from torch.optim import Optimizer, AdamW
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 
 
-class Module(pl.LightningModule):
+class Module(L.LightningModule):
     """
     基於 PyTorch Lightning 的 Module，用於訓練和測試的深度學習模型模板。
 
@@ -140,12 +140,12 @@ class Module(pl.LightningModule):
         scheduler = {"scheduler": self.scheduler, "interval": "step", "frequency": 1}
         return [self.optimizer], [scheduler]
 
-    def configure_callbacks(self) -> Sequence[pl.callbacks.Callback] | pl.callbacks.Callback:
+    def configure_callbacks(self) -> Sequence[L.Callback] | L.Callback:
         """
         配置訓練過程中使用的回調函數。
 
         Returns:
-            Union[Sequence[pl.callbacks.Callback], pl.callbacks.Callback]: 一個或多個回調函數。
+            Union[Sequence[L.Callback], L.Callback]: 一個或多個回調函數。
         """
         calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode)
         return [calback]
@@ -184,19 +184,19 @@ class Module(pl.LightningModule):
         mlflow.onnx.log_model(onnx_model=onnx.load_model(onnx_byte_stream), artifact_path="onnx_model")
 
 
-class MLflowModelCheckpoint(pl.callbacks.ModelCheckpoint):
+class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
     """
     專為 MLflow 整合的 ModelCheckpoint。
 
     主要功能是在訓練過程中選擇最佳模型檢查點，然後將該模型保存到 MLflow 中，以便進行後續的實驗追蹤和模型部署。
     """
 
-    def _save_checkpoint(self, trainer: pl.Trainer, filepath: str) -> None:
+    def _save_checkpoint(self, trainer: L.Trainer, filepath: str) -> None:
         """
         在訓練過程中保存模型檢查點到 MLflow。
 
         Args:
-            trainer (pl.Trainer): PyTorch Lightning 訓練器。
+            trainer (L.Trainer): PyTorch Lightning 訓練器。
             filepath (str): 要保存的模型檢查點文件的路徑。
         """
         mlflow.pytorch.log_model(trainer.model, "model")
@@ -210,7 +210,7 @@ class MLflowModelCheckpoint(pl.callbacks.ModelCheckpoint):
                 logger.after_save_checkpoint(proxy(self))
 
 
-# class MLflowModelCheckpoint(pl.Callback):
+# class MLflowModelCheckpoint(L.Callback):
 #     def __init__(self, monitor: str, mode: str, mlflow_logger: MLFlowLogger) -> None:
 #         super().__init__()
 #         self.monitor = monitor

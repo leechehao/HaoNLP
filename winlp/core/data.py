@@ -2,7 +2,7 @@ from typing import Optional
 
 import os
 
-import lightning.pytorch as pl
+import lightning as L
 import datasets
 import transformers
 from torch.utils.data import DataLoader
@@ -14,7 +14,7 @@ TEST = "test"
 LABELS = "labels"
 
 
-class DataModule(pl.LightningDataModule):
+class DataModule(L.LightningDataModule):
     """
     基於 PyTorch Lightning 的 DataModule，用於處理自然語言處理（NLP）任務數據集的模板。
 

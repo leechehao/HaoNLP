@@ -1,5 +1,5 @@
 import torch
-import lightning.pytorch as pl
+import lightning as L
 from lightning.pytorch.loggers import MLFlowLogger
 
 from winlp.task.text_classification import TextClassificationDataModule, TextClassificationModule
@@ -7,7 +7,7 @@ from winlp.task.text_classification import TextClassificationDataModule, TextCla
 
 # 設置環境變量和PyTorch設置
 torch.set_float32_matmul_precision("high")
-pl.seed_everything(0, workers=True)
+L.seed_everything(0, workers=True)
 
 
 # 初始化資料模組
@@ -36,7 +36,7 @@ mlf_logger = MLFlowLogger(
 )
 
 # 設置訓練器
-trainer = pl.Trainer(
+trainer = L.Trainer(
     accelerator="auto",
     devices="auto",
     deterministic=True,

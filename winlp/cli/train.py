@@ -1,7 +1,7 @@
 import hydra
 import mlflow
 import torch
-import lightning.pytorch as pl
+import lightning as L
 from omegaconf import DictConfig
 from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
@@ -18,7 +18,7 @@ def main(cfg: DictConfig) -> None:
     utils.check_missing_value(cfg)
 
     # ===== 設定種子 =====
-    pl.seed_everything(cfg.seed, workers=True)
+    L.seed_everything(cfg.seed, workers=True)
 
     # ===== 建立資料模組 =====
     data_module = instantiate(cfg.dataset)
