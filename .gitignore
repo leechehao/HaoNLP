@@ -1,6 +1,3 @@
-models*
 *.ipynb
 __pycache__
-exp
 .vscode
-outputs
