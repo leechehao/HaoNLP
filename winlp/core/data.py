@@ -7,11 +7,7 @@ import datasets
 import transformers
 from torch.utils.data import DataLoader
 
-
-TRAIN = "train"
-VALIDATION = "validation"
-TEST = "test"
-LABELS = "labels"
+from winlp.core import types
 
 
 class DataModule(L.LightningDataModule):
@@ -61,21 +57,21 @@ class DataModule(L.LightningDataModule):
             stage (str): `fit`、`validate`、`test` 或 `predict`。
         """
         if stage == "fit":
-            dataset_list = datasets.load_dataset(path=self.dataset_name, split=[TRAIN, VALIDATION])
-            dataset_dict = datasets.DatasetDict({TRAIN: dataset_list[0], VALIDATION: dataset_list[1]})
+            dataset_list = datasets.load_dataset(path=self.dataset_name, split=[types.SplitType.TRAIN, types.SplitType.VALIDATION])
+            dataset_dict = datasets.DatasetDict({types.SplitType.TRAIN: dataset_list[0], types.SplitType.VALIDATION: dataset_list[1]})
         elif stage == "test":
-            dataset = datasets.load_dataset(path=self.dataset_name, split=TEST)
-            dataset_dict = datasets.DatasetDict({TEST: dataset})
+            dataset = datasets.load_dataset(path=self.dataset_name, split=types.SplitType.TEST)
+            dataset_dict = datasets.DatasetDict({types.SplitType.TEST: dataset})
         else:
             dataset_dict = datasets.load_dataset(path=self.dataset_name)
 
         for split in dataset_dict:
             dataset_dict[split] = self.process_data(dataset_dict[split], split)
 
-        dataset_dict.set_format(type="torch", columns=self.tokenizer.model_input_names + [LABELS])
+        dataset_dict.set_format(type="torch", columns=self.tokenizer.model_input_names + [types.LABELS])
         self.dataset = dataset_dict
 
-    def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
+    def process_data(self, split_dataset: datasets.Dataset, split: types.SplitType) -> datasets.Dataset:
         """
         預處理數據集。這個方法應在子類中實現，以進行數據集的清洗、過濾、轉換等操作。
 
@@ -92,20 +88,20 @@ class DataModule(L.LightningDataModule):
         raise NotImplementedError("必須在子類中實現數據集的預處理流程。")
 
     def train_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset[TRAIN], batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.dataset[types.SplitType.TRAIN], batch_size=self.batch_size, shuffle=True)
 
     def val_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset[VALIDATION], batch_size=self.batch_size)
+        return DataLoader(self.dataset[types.SplitType.VALIDATION], batch_size=self.batch_size)
 
     def test_dataloader(self) -> DataLoader:
-        return DataLoader(self.dataset[TEST], batch_size=self.batch_size)
+        return DataLoader(self.dataset[types.SplitType.TEST], batch_size=self.batch_size)
 
     @property
     def label_list(self) -> list[str]:
         if self._label_list is None:
             self.setup("fit")
         return self._label_list
-    
+
     @property
     def num_labels(self) -> int:
         return len(self.label_list)

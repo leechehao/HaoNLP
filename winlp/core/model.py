@@ -10,6 +10,8 @@ import mlflow
 from torch.optim import Optimizer, AdamW
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 
+from winlp.core import types
+
 
 class Module(L.LightningModule):
     """
@@ -24,7 +26,7 @@ class Module(L.LightningModule):
         pretrained_model_name_or_path: str,
         label_list: list[str],
         monitor: str,
-        mode: str,
+        mode: types.MonitorModeType,
         learning_rate: float = 1e-3,
         weight_decay: float = 1e-2,
         warmup_ratio: float = 0.0,
@@ -37,7 +39,7 @@ class Module(L.LightningModule):
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
-            mode (str): 監控指標的模式，例如 `min`、`max`。
+            mode (types.MonitorModeType): 監控指標的模式，可選的值為 `min`、`max`。
             learning_rate (float, optional): 學習率。預設為 1e-3。
             weight_decay (float, optional): 權重衰減，用於正則化和防止模型過擬合。預設為 1e-2。
             warmup_ratio (float, optional): 預熱比例，在訓練初期學習率逐漸提升階段所佔的總訓練步驟比例。預設為 0.0。

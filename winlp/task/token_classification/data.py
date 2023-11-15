@@ -6,13 +6,7 @@ import datasets
 import transformers
 from transformers import PreTrainedTokenizerBase
 
-from winlp.core import DataModule
-
-TRAIN = "train"
-MAX_LENGTH = "max_length"
-TOKENS = "tokens"
-LABELS = "labels"
-IGNORE_INDEX = -100
+from winlp.core import DataModule, types
 
 
 class TokenClassificationDataModule(DataModule):
@@ -40,7 +34,7 @@ class TokenClassificationDataModule(DataModule):
         super().__init__(dataset_name, pretrained_model_name_or_path, label_column_name, **kwargs)
         self.label_all_tokens = label_all_tokens
 
-    def process_data(self, split_dataset: datasets.Dataset, split: str) -> datasets.Dataset:
+    def process_data(self, split_dataset: datasets.Dataset, split: types.SplitType) -> datasets.Dataset:
         """
         預處理數據集，轉換成模型可用的格式。
 
@@ -51,21 +45,21 @@ class TokenClassificationDataModule(DataModule):
         Returns:
             datasets.Dataset: 轉換後的數據集分割。
         """
-        if split == "train":
+        if split == types.SplitType.TRAIN:
             self._prepare_label_list(split_dataset)
 
         convert_to_features = partial(
             self.convert_to_features,
             tokenizer=self.tokenizer,
             label_column_name=self.label_column_name,
-            padding=MAX_LENGTH if split == TRAIN else True,
+            padding=types.MAX_LENGTH if split == types.SplitType.TRAIN else True,
             max_length=self.max_length,
             label_all_tokens=self.label_all_tokens,
         )
         split_dataset = split_dataset.map(
             convert_to_features,
             batched=True,
-            num_proc=self.num_workers if split == "train" else None,
+            num_proc=self.num_workers if split == types.SplitType.TRAIN else None,
         )
         return split_dataset
 
@@ -93,7 +87,7 @@ class TokenClassificationDataModule(DataModule):
             transformers.BatchEncoding: 包含轉換後特徵的 BatchEncoding 對象。
         """
         tokenized_inputs = tokenizer(
-            examples[TOKENS],
+            examples[types.TOKENS],
             padding=padding,
             truncation=True,
             max_length=max_length,
@@ -106,15 +100,15 @@ class TokenClassificationDataModule(DataModule):
             label_ids = []
             for word_idx in word_ids:
                 if word_idx is None:
-                    label_ids.append(IGNORE_INDEX)
+                    label_ids.append(types.IGNORE_INDEX)
                 elif word_idx != previous_word_idx:
                     label_ids.append(label[word_idx])
                 else:
-                    label_ids.append(label[word_idx] if label_all_tokens else IGNORE_INDEX)
+                    label_ids.append(label[word_idx] if label_all_tokens else types.IGNORE_INDEX)
                 previous_word_idx = word_idx
 
             labels.append(label_ids)
-        tokenized_inputs[LABELS] = labels
+        tokenized_inputs[types.LABELS] = labels
         return tokenized_inputs
 
     def _prepare_label_list(self, dataset: datasets.Dataset) -> None:

@@ -5,7 +5,7 @@ import transformers
 import torchmetrics
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 
-from winlp.core import Module
+from winlp.core import Module, types
 
 
 class TokenClassificationModule(Module):
@@ -18,7 +18,7 @@ class TokenClassificationModule(Module):
         pretrained_model_name_or_path: str,
         label_list: list[str],
         monitor: str,
-        mode: str,
+        mode: types.MonitorModeType,
         label_all_tokens: bool = False,
         downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForTokenClassification,
         **kwargs,
@@ -30,7 +30,7 @@ class TokenClassificationModule(Module):
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 要監控的指標名稱。
-            mode (str): 監控指標的模式，例如 `min`、`max`。
+            mode (types.MonitorModeType): 監控指標的模式，可選的值為 `min`、`max`。
             label_all_tokens (bool, optional): 若為 True，則對所有 subtoken（例如，tokenize 時）進行標記。預設為 False，即僅對第一個 subtoken 進行標記。
             downstream_model_type (Type[_BaseAutoModelClass], optional): 下游任務模型的類型。預設為 `transformers.  AutoModelForTokenClassification`
         """
@@ -43,7 +43,7 @@ class TokenClassificationModule(Module):
             **kwargs,
         )
         self.label_all_tokens = label_all_tokens
-        self.best_metric = float("-inf") if mode == "max" else float("inf")
+        self.best_metric = float("-inf") if mode == types.MonitorModeType.MAX else float("inf")
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.TokenClassifierOutput:
         """
@@ -97,7 +97,7 @@ class TokenClassificationModule(Module):
         outputs = self.model(**batch)
         loss, logits = outputs[:2]
         preds = torch.argmax(logits, dim=2)
-        metric_dict = self.compute_metrics(preds, batch["labels"], mode=prefix)
+        metric_dict = self.compute_metrics(preds, batch[types.LABELS], mode=prefix)
         self.log_dict(metric_dict, prog_bar=True, on_step=False, on_epoch=True)
         self.log(f"{prefix}_loss", loss, prog_bar=True, sync_dist=True)
         return loss
@@ -117,7 +117,7 @@ class TokenClassificationModule(Module):
 
     def on_validation_epoch_end(self):
         current_metric = self.trainer.callback_metrics[self.monitor].item()
-        if (self.mode == "min" and current_metric < self.best_metric) or (self.mode == "max" and current_metric > self.best_metric):
+        if (self.mode == types.MonitorModeType.MIN and current_metric < self.best_metric) or (self.mode == types.MonitorModeType.MAX and current_metric > self.best_metric):
             self.best_metric = current_metric
         self.log(f"best_{self.monitor}", self.best_metric)
 
