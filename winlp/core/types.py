@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 MAX_LENGTH = "max_length"
 TOKENS = "tokens"
+TEXTS = "texts"
 LABELS = "labels"
 IGNORE_INDEX = -100
 

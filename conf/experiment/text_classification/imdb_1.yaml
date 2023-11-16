@@ -15,10 +15,10 @@ task:
 trainer:
   max_epochs: 10
   logger:
-    experiment_name: "IMDb-Text-Classification"
-    run_name: "distilbert-base-uncased-1"
-    tracking_uri: "./mlflow"
+    experiment_name: IMDb-Text-Classification
+    run_name: distilbert-base-uncased-1
+    tracking_uri: ./mlflow
 
 test: False
 
-run_id: run_id
+run_id: 03176da27e774416879e662ec4182f9c

@@ -77,7 +77,7 @@ class DataModule(L.LightningDataModule):
 
         Args:
             split_dataset (datasets.Dataset): 要進行預處理的數據集分割，例如 `train`、`validation` 或 `test`。
-            split (str): 指定當前正在處理的數據集分割部分，如 `train`、`validation` 或 `test`。
+            split (types.SplitType): 指定當前正在處理的數據集分割部分，如 `train`、`validation` 或 `test`。
 
         Raises:
             NotImplementedError: 如果該方法未在子類中實現，則拋出此異常。

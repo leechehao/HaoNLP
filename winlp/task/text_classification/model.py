@@ -5,10 +5,7 @@ import transformers
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 from sklearn.metrics import classification_report
 
-from winlp.core import Module
-
-
-LABELS = "labels"
+from winlp.core import Module, types
 
 
 class TextClassificationModule(Module):
@@ -21,7 +18,7 @@ class TextClassificationModule(Module):
         pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
         label_list (list[str]): 標籤名稱列表。
         monitor (str): 監控指標的名稱。
-        mode (str): 監控模式，如 "min" 或 "max"。
+        mode (types.MonitorModeType): 監控模式，如 "min" 或 "max"。
         downstream_model_type (Type[_BaseAutoModelClass]): 預設使用的模型類型。
         **kwargs: 其他關鍵字參數。
 
@@ -38,7 +35,7 @@ class TextClassificationModule(Module):
         pretrained_model_name_or_path: str,
         label_list: list[str],
         monitor: str,
-        mode: str,
+        mode: types.MonitorModeType,
         downstream_model_type: Type[_BaseAutoModelClass] = transformers.AutoModelForSequenceClassification,
         **kwargs,
     ) -> None:
@@ -49,7 +46,7 @@ class TextClassificationModule(Module):
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_list (list[str]): 標籤名稱列表。
             monitor (str): 監控指標的名稱。
-            mode (str): 監控模式，如 "min" 或 "max"。
+            mode (types.MonitorModeType): 監控模式，如 "min" 或 "max"。
             downstream_model_type (Type[_BaseAutoModelClass], optional): 使用的模型類型，預設為 AutoModelForSequenceClassification。
             **kwargs: 其他關鍵字參數。
         """
@@ -61,7 +58,7 @@ class TextClassificationModule(Module):
             mode,
             **kwargs,
         )
-        self.best_metric = float("-inf") if mode == "max" else float("inf")
+        self.best_metric = float("-inf") if mode == types.MonitorModeType.MAX else float("inf")
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.SequenceClassifierOutput:
         """
@@ -100,7 +97,7 @@ class TextClassificationModule(Module):
         """
         loss, logits = self.model(**batch)[:2]
         preds = torch.argmax(logits, dim=1)
-        accuracy = classification_report(batch[LABELS].cpu(), preds.cpu(), output_dict=True, zero_division=0)["accuracy"]
+        accuracy = classification_report(batch[types.LABELS].cpu(), preds.cpu(), output_dict=True, zero_division=0)["accuracy"]
 
         self.log(f"{prefix}_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         self.log(f"{prefix}_accuracy", accuracy, prog_bar=True, on_step=False, on_epoch=True)
@@ -117,7 +114,7 @@ class TextClassificationModule(Module):
 
     def on_validation_epoch_end(self):
         current_metric = self.trainer.callback_metrics[self.monitor].item()
-        if (self.mode == "min" and current_metric < self.best_metric) or (self.mode == "max" and current_metric > self.best_metric):
+        if (self.mode == types.MonitorModeType.MIN and current_metric < self.best_metric) or (self.mode == types.MonitorModeType.MAX and current_metric > self.best_metric):
             self.best_metric = current_metric
         self.log(f"best_{self.monitor}", self.best_metric)
 

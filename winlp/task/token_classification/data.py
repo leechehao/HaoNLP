@@ -40,7 +40,7 @@ class TokenClassificationDataModule(DataModule):
 
         Args:
             split_dataset (datasets.Dataset): 要處理的數據集分割。
-            split (str): 數據集的分割名稱。
+            split (types.SplitType): 數據集的分割名稱。
 
         Returns:
             datasets.Dataset: 轉換後的數據集分割。

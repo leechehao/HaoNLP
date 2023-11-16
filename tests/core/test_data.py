@@ -1,11 +1,14 @@
 import unittest
-from winlp.core import DataModule
 from unittest.mock import patch, MagicMock
+
 from datasets import Dataset, DatasetDict
 from torch.utils.data import DataLoader
 
+from winlp.core import DataModule
+
 
 class TestDataModule(unittest.TestCase):
+    
     @patch("transformers.AutoTokenizer.from_pretrained")
     @patch("os.cpu_count")
     def setUp(self, mock_cpu_count, mock_tokenizer):
@@ -102,21 +105,18 @@ class TestDataModule(unittest.TestCase):
 
     def test_train_dataloader(self):
         self.test_setup(stage="fit")
-        train_dataloader = self.data_module.train_dataloader()
 
-        self.assertIsInstance(train_dataloader, DataLoader)
+        self.assertIsInstance(self.data_module.train_dataloader(), DataLoader)
 
     def test_val_dataloader(self):
         self.test_setup(stage="fit")
-        val_dataloader = self.data_module.val_dataloader()
 
-        self.assertIsInstance(val_dataloader, DataLoader)
+        self.assertIsInstance(self.data_module.val_dataloader(), DataLoader)
 
     def test_test_dataloader(self):
         self.test_setup(stage="test")
-        test_dataloader = self.data_module.test_dataloader()
 
-        self.assertIsInstance(test_dataloader, DataLoader)
+        self.assertIsInstance(self.data_module.test_dataloader(), DataLoader)
 
     @patch("winlp.core.DataModule.setup")
     def test_label_list(self, mock_setup):

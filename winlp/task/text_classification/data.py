@@ -1,11 +1,6 @@
 import datasets
 
-from winlp.core import DataModule
-
-
-TRAIN = "train"
-TEXTS = "texts"
-LABELS = "labels"
+from winlp.core import DataModule, types
 
 
 class TextClassificationDataModule(DataModule):
@@ -54,20 +49,20 @@ class TextClassificationDataModule(DataModule):
         Returns:
             datasets.Dataset: 處理後的資料集。
         """
-        if split == "train":
+        if split == types.SplitType.TRAIN:
             self._prepare_label_list(split_dataset)
 
         split_dataset = split_dataset.map(
             lambda example: self.tokenizer(
-                example[TEXTS],
-                padding="max_length" if split == TRAIN else True,
+                example[types.TEXTS],
+                padding=types.MAX_LENGTH if split == types.SplitType.TRAIN else True,
                 truncation=True,
                 max_length=self.max_length,
                 return_tensors="pt",
             ),
             batched=True,
             batch_size=self.batch_size,
-            num_proc=self.num_workers if split == TRAIN else None,
+            num_proc=self.num_workers if split == types.SplitType.TRAIN else None,
         )
         return split_dataset
 
