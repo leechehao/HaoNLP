@@ -201,7 +201,9 @@ class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
             trainer (L.Trainer): PyTorch Lightning 訓練器。
             filepath (str): 要保存的模型檢查點文件的路徑。
         """
-        mlflow.pytorch.log_model(trainer.model, "model")
+        checkpoint = trainer._checkpoint_connector.dump_checkpoint(weights_only=True)
+        mlflow.pytorch.log_state_dict(checkpoint, "model")
+        # mlflow.pytorch.log_model(trainer.model, "model")
 
         self._last_global_step_saved = trainer.global_step
         self._last_checkpoint_saved = filepath

@@ -22,6 +22,8 @@ def mlflow_setup(
 
 
 def log_config(cfg: DictConfig, hycfg: DictConfig, artifact_file: str) -> None:
+    mlflow.log_param("module_class_path", cfg.task._target_)
+    
     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
     mlflow.log_dict(cfg_dict, artifact_file)
 
