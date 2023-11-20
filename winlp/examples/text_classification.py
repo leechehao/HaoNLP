@@ -22,7 +22,7 @@ datamodule.setup(stage="fit")
 # 初始化文本分類模型
 model = TextClassificationModule(
     pretrained_model_name_or_path="distilbert-base-uncased",
-    num_labels=datamodule.num_labels,
+    label_list=datamodule.label_list,
     monitor="val_loss",
     mode="min",
     learning_rate=2e-5,

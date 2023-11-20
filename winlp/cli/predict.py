@@ -21,10 +21,10 @@ def main():
     args = parser.parse_args()
 
     mlflow.set_tracking_uri(args.tracking_uri)
-    module_name, class_name = mlflow.get_run(args.run_id).data.params["module_class_path"].rsplit(".", 1)
-    checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{args.run_id}/model/state_dict.pth")
-    model = getattr(importlib.import_module(module_name), class_name).load_from_checkpoint(checkpoint_path)
-    # model = mlflow.pytorch.load_model(f"runs:/{args.run_id}/model")
+    # module_name, class_name = mlflow.get_run(args.run_id).data.params["module_class_path"].rsplit(".", 1)
+    # checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{args.run_id}/model/state_dict.pth")
+    # model = getattr(importlib.import_module(module_name), class_name).load_from_checkpoint(checkpoint_path)
+    model = mlflow.pytorch.load_model(f"runs:/{args.run_id}/model")
     model.eval()
 
     if args.inputs is not None:

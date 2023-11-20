@@ -100,7 +100,10 @@ class TestModule(unittest.TestCase):
     def test_configure_callbacks(self, mock_MLflowModelCheckpoint):
         self.model.configure_callbacks()
 
-        mock_MLflowModelCheckpoint.assert_called_once_with(monitor=self.model.monitor, mode=self.model.mode)
+        mock_MLflowModelCheckpoint.assert_called_once_with(
+            subclass_path=self.model.__class__.__module__,
+            subclass_name=self.model.__class__.__name__,
+        )
 
     @patch("mlflow.onnx")
     @patch("onnx.load_model")

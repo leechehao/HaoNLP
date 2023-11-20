@@ -41,10 +41,10 @@ def main(cfg: DictConfig) -> None:
     trainer.fit(model, data_module.train_dataloader(), data_module.val_dataloader())
 
     # ===== 上傳 onnx 模型 =====
-    module_name, class_name = cfg.task._target_.rsplit(".", 1)
-    checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{mlflow.active_run().info.run_id}/model/state_dict.pth")
-    logged_model = getattr(importlib.import_module(module_name), class_name).load_from_checkpoint(checkpoint_path)
-    # logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
+    # module_name, class_name = cfg.task._target_.rsplit(".", 1)
+    # checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{mlflow.active_run().info.run_id}/model/state_dict.pth")
+    # logged_model = getattr(importlib.import_module(module_name), class_name).load_from_checkpoint(checkpoint_path)
+    logged_model = mlflow.pytorch.load_model(f"runs:/{mlflow.active_run().info.run_id}/model")
     logged_model.log_onnx_model()
 
     # ===== 測試集評估 =====

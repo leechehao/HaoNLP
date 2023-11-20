@@ -19,7 +19,7 @@ datamodule.setup(stage="fit")
 
 model = TokenClassificationModule(
     pretrained_model_name_or_path="prajjwal1/bert-tiny",
-    num_labels=datamodule.num_labels,
+    label_list=datamodule.label_list,
     monitor="val_f1",
     mode="max",
     learning_rate=1e-3,

@@ -1,12 +1,14 @@
 from typing import Optional, Sequence, Tuple, Type
 
 import io
+import importlib
 from weakref import proxy
 
 import onnx
 import lightning as L
 import transformers
 import mlflow
+import torch
 from torch.optim import Optimizer, AdamW
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
 
@@ -149,7 +151,9 @@ class Module(L.LightningModule):
         Returns:
             Union[Sequence[L.Callback], L.Callback]: 一個或多個回調函數。
         """
-        calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode)
+        print(self.__class__.__module__)
+        print(self.__class__.__name__)
+        calback = MLflowModelCheckpoint(subclass_path=self.__class__.__module__, subclass_name=self.__class__.__name__)
         return [calback]
 
     def log_onnx_model(self) -> None:
@@ -192,6 +196,10 @@ class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
 
     主要功能是在訓練過程中選擇最佳模型檢查點，然後將該模型保存到 MLflow 中，以便進行後續的實驗追蹤和模型部署。
     """
+    def __init__(self, subclass_path: str, subclass_name: str) -> None:
+        super().__init__()
+        self.subclass_path = subclass_path
+        self.subclass_name = subclass_name
 
     def _save_checkpoint(self, trainer: L.Trainer, filepath: str) -> None:
         """
@@ -202,8 +210,14 @@ class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
             filepath (str): 要保存的模型檢查點文件的路徑。
         """
         checkpoint = trainer._checkpoint_connector.dump_checkpoint(weights_only=True)
-        mlflow.pytorch.log_state_dict(checkpoint, "model")
-        # mlflow.pytorch.log_model(trainer.model, "model")
+        # mlflow.pytorch.log_state_dict(checkpoint, "model")
+
+        buffer = io.BytesIO()
+        torch.save(checkpoint, buffer)
+        buffer.seek(0)
+
+        model = getattr(importlib.import_module(self.subclass_path), self.subclass_name).load_from_checkpoint(buffer)
+        mlflow.pytorch.log_model(model, "model")
 
         self._last_global_step_saved = trainer.global_step
         self._last_checkpoint_saved = filepath
@@ -215,15 +229,11 @@ class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
 
 
 # class MLflowModelCheckpoint(L.Callback):
-#     def __init__(self, monitor: str, mode: str, mlflow_logger: MLFlowLogger) -> None:
+#     def __init__(self, monitor: str, mode: str) -> None:
 #         super().__init__()
 #         self.monitor = monitor
-#         self.mlflow_logger = mlflow_logger
 #         self.mode = mode
 #         self.best_metric = float("-inf") if mode == "max" else float("inf")
-#         mlflow.set_tracking_uri(mlflow_logger._tracking_uri)
-#         mlflow.set_experiment(experiment_id=mlflow_logger.experiment_id)
-#         mlflow.start_run(run_id=mlflow_logger.run_id)
 
 #     def on_validation_epoch_end(self, trainer, pl_module):
 #         current_metric = trainer.callback_metrics[self.monitor].item()
