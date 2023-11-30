@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - override /dataset: token_classification/chest_ct_ner.yaml
+  - override /task: token_classification
+  - _self_
+
+dataset:
+  batch_size: 4
+task:
+  pretrained_model_name_or_path: distilbert-base-uncased
+  monitor: val_f1
+  mode: max
+  learning_rate: 3e-4
+  warmup_ratio: 0.0
+trainer:
+  max_epochs: 1
+  logger:
+    experiment_name: Chest_CT_NER
+    run_name: run_2
+    tracking_uri: http://192.168.1.76:9527
+
+test: True

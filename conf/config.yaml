@@ -1,0 +1,15 @@
+defaults:
+  - dataset: default
+  - task: default
+  - trainer: default
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+  - _self_
+
+seed: 1314
+test: False
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
