@@ -49,6 +49,8 @@ class TextClassificationDataModule(DataModule):
         Returns:
             datasets.Dataset: 處理後的資料集。
         """
+        split_dataset = split_dataset.class_encode_column(self.label_column_name)
+
         if split == types.SplitType.TRAIN:
             self._prepare_label_list(split_dataset)
 
