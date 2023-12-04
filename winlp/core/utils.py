@@ -27,7 +27,8 @@ def log_config(cfg: DictConfig, hycfg: DictConfig, artifact_file: str) -> None:
     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
     mlflow.log_dict(cfg_dict, artifact_file)
 
-    for d in hycfg.runtime.config_sources:
-        if d.provider == "main":
-            expcfg_path = f"{d.path}/experiment/{hycfg.runtime.choices.experiment}.yaml"
-            mlflow.log_artifact(expcfg_path)
+    if "experiment" in hycfg.runtime.choices:
+        for d in hycfg.runtime.config_sources:
+            if d.provider == "main":
+                expcfg_path = f"{d.path}/experiment/{hycfg.runtime.choices.experiment}.yaml"
+                mlflow.log_artifact(expcfg_path)
