@@ -1,590 +1,600 @@
--DOCSTART- -X- O
-- -X- _ O
-No -X- _ B-Certainty
-significant -X- _ O
-pleural -X- _ B-Finding
-effusion -X- _ I-Finding
-. -X- _ O
+4. O
+There O
+are O
+gallstones B-Finding
+. O
 
-Increased -X- _ B-Change
-pleural -X- _ B-Finding
-effusion -X- _ I-Finding
-, -X- _ O
-bil. -X- _ B-Location
+□ O
+Adenocarcinoma O
+in O
+situ O
+( O
+AIS O
+) O
 
-4. -X- _ O
-Enlarged -X- _ B-Size
-right -X- _ B-Location
-adrenal -X- _ I-Location
-metastasis -X- _ B-Finding
-and -X- _ O
-liver -X- _ B-Location
-metastases -X- _ B-Finding
-. -X- _ O
+Minimal B-Attribute
+fibronodular B-Attribute
+lesion B-Observation
+in O
+the O
+upper B-Location
+lobe I-Location
+of I-Location
+right I-Location
+lung I-Location
+is O
+seen O
+, O
+probably O
+due O
+to O
+chronic B-Diagnosis
+pulmonary I-Diagnosis
+TB I-Diagnosis
+. O
 
-LULMultiple -X- _ B-Location
-focal -X- _ B-Attribute
-atelectatic -X- _ B-Attribute
-patches -X- _ B-Finding
-and -X- _ O
-subpleural -X- _ B-Attribute
-reticular -X- _ B-Attribute
-opacities -X- _ B-Observation
-in -X- _ B-Location
-LUL -X- _ I-Location
-and -X- _ O
-bil. -X- _ B-Location
-LL -X- _ I-Location
-, -X- _ O
-stable -X- _ B-Change
-compared -X- _ O
-with -X- _ O
-last -X- _ O
-CT -X- _ O
-( -X- _ O
-2018/10/31 -X- _ O
-) -X- _ O
+left B-Location
+renal I-Location
+calcification B-Finding
 
-□ -X- _ O
-Left -X- _ O
-Lower -X- _ O
-Lobe -X- _ O
+> O
+Pleural B-Finding
+thickening I-Finding
+at O
+right B-Location
+minor I-Location
+fissure I-Location
+of O
+lung O
+, O
+no B-Change
+significantinterval I-Change
+change I-Change
+. O
 
-□ -X- _ O
-Left -X- _ O
-Upper -X- _ O
-Lobe -X- _ O
+□ O
+Other O
+: O
+Size O
+: O
 
-Calcification -X- _ B-Finding
-of -X- _ O
-aortic -X- _ B-Location
-arch -X- _ I-Location
-, -X- _ O
-descending -X- _ B-Location
-T -X- _ I-Location
-- -X- _ I-Location
-aorta -X- _ I-Location
-, -X- _ O
-and -X- _ O
-abdominal -X- _ B-Location
-aorta -X- _ I-Location
-is -X- _ O
-seen -X- _ O
-. -X- _ O
+> O
+Hypodense B-Attribute
+nodules B-Observation
+at O
+right B-Location
+lobe I-Location
+of I-Location
+liver I-Location
+, O
+no B-Change
+change I-Change
+, O
+favor O
+hepaticcysts B-Diagnosis
+. O
 
-stable -X- _ B-Change
-. -X- _ O
+2. O
+Stable B-Change
+minimal B-Attribute
+left B-Location
+pleual B-Finding
+effusion I-Finding
+, O
+pleural B-Finding
+thickening I-Finding
+and O
+small B-Size
+pleural B-Attribute
+nodules B-Observation
 
-> -X- _ O
-Ossification -X- _ B-Finding
-of -X- _ I-Finding
-the -X- _ I-Finding
-cartilages -X- _ I-Finding
-of -X- _ O
-the -X- _ O
-trachea -X- _ B-Location
-and -X- _ O
-bilateral -X- _ B-Location
-main -X- _ I-Location
-bronchi -X- _ I-Location
-is -X- _ O
-seen -X- _ O
-. -X- _ O
+2. O
+For O
+details O
+, O
+please O
+correlate O
+with O
+above O
+description O
+. O
 
-> -X- _ O
-bilateral -X- _ B-Location
-pleural -X- _ B-Finding
-effusion -X- _ I-Finding
-more -X- _ B-Attribute
-on -X- _ I-Attribute
-right -X- _ I-Attribute
-, -X- _ O
-stable -X- _ B-Change
-. -X- _ O
+stable B-Change
+. O
 
-DDx -X- _ O
-: -X- _ O
-inflammatory -X- _ B-Diagnosis
-process -X- _ O
-such -X- _ O
-as -X- _ O
-organizing -X- _ B-Diagnosis
-pneumonia -X- _ I-Diagnosis
-. -X- _ O
+- O
+RUL B-Location
+lung B-Finding
+cancer I-Finding
+s/p B-Change
+operation I-Change
+, O
+with O
+persistent B-Attribute
+nodules B-Observation
+at O
+LLL B-Location
+and O
+right B-Location
+major I-Location
+fissue I-Location
+, O
+of O
+unknown O
+clinical O
+significance O
+, O
+no B-Change
+significantinterval I-Change
+change I-Change
+. O
 
-> -X- _ O
-Right -X- _ B-Location
-renal -X- _ I-Location
-angiomyolipoma -X- _ B-Finding
-( -X- _ I-Finding
-AML -X- _ I-Finding
-) -X- _ I-Finding
-. -X- _ O
+> O
+Normal B-Finding
+appearance O
+of O
+bilateral B-Location
+adrenal I-Location
+gland I-Location
+. O
 
-> -X- _ O
-Mixed -X- _ B-Attribute
-osteolytic -X- _ B-Attribute
-and -X- _ O
-osteoblastic -X- _ B-Attribute
-bone -X- _ B-Finding
-metastasis -X- _ I-Finding
-at -X- _ O
-C -X- _ B-Location
-- -X- _ I-Location
-T -X- _ I-Location
-- -X- _ I-Location
-L -X- _ I-Location
-spines -X- _ I-Location
-, -X- _ O
-stable -X- _ B-Change
-CT -X- _ O
-appearance -X- _ O
-. -X- _ O
+- O
+Non B-Certainty
+- I-Certainty
+specific I-Certainty
+small B-Size
+mediastinal B-Location
+nodes B-Observation
+. O
 
-- -X- _ O
-s/p -X- _ B-Change
-wegde -X- _ B-Finding
-resection -X- _ I-Finding
-with -X- _ O
-suture -X- _ B-Attribute
-of -X- _ O
-RML -X- _ B-Location
-with -X- _ O
-post -X- _ B-Finding
-- -X- _ I-Finding
-op -X- _ I-Finding
-. -X- _ I-Finding
-change -X- _ I-Finding
-. -X- _ O
+> O
+Partial B-Finding
+atelectasis I-Finding
+of O
+RML B-Location
+of O
+lung O
+. O
 
-- -X- _ O
-Non -X- _ B-Certainty
-- -X- _ I-Certainty
-specific -X- _ I-Certainty
-small -X- _ B-Size
-mediastinal -X- _ B-Location
-nodes -X- _ B-Observation
-. -X- _ O
+> O
+Small B-Size
+nodule B-Observation
+at O
+RLL B-Location
+( O
+1.0 B-Size
+mm I-Size
+, O
+Ser O
+/ O
+Img O
+: O
+2 O
+/ O
+33 O
+) O
+, O
+no B-Change
+significant I-Change
+intervalchange I-Change
+. O
 
-without -X- _ B-Change
-appreciable -X- _ I-Change
-change -X- _ I-Change
-. -X- _ O
+No B-Certainty
+apparent O
+adrenal B-Location
+mass B-Observation
 
-Recommend -X- _ O
-further -X- _ O
-clinical -X- _ O
-evaluation -X- _ O
-, -X- _ O
-and -X- _ O
-follow-up -X- _ O
-. -X- _ O
+- O
+Compatible O
+with O
+RLL B-Location
+lung B-Finding
+cancer I-Finding
+s/p B-Change
+treatment I-Change
+, O
+no B-Change
+significantinterval I-Change
+change I-Change
+, O
+suggest O
+follow O
+up O
+. O
 
-> -X- _ O
-Hypodense -X- _ B-Attribute
-nodules -X- _ B-Observation
-at -X- _ O
-right -X- _ B-Location
-lobe -X- _ I-Location
-of -X- _ I-Location
-liver -X- _ I-Location
-, -X- _ O
-no -X- _ B-Change
-change -X- _ I-Change
-, -X- _ O
-favor -X- _ O
-hepaticcysts -X- _ B-Diagnosis
-. -X- _ O
+Atherosclerotic B-Finding
+changes I-Finding
+of O
+the O
+aorta B-Location
+with O
+calcified B-Attribute
+plaques B-Finding
 
-Compression -X- _ B-Finding
-fracture -X- _ I-Finding
-of -X- _ O
-T -X- _ B-Location
-- -X- _ I-Location
-6 -X- _ I-Location
-and -X- _ O
-T -X- _ B-Location
-- -X- _ I-Location
-12 -X- _ I-Location
-is -X- _ O
-seen -X- _ O
-. -X- _ O
+Recommend O
+clinical O
+correlation O
+and O
+follow-up O
+. O
 
-2. -X- _ O
-For -X- _ O
-details -X- _ O
-, -X- _ O
-please -X- _ O
-correlate -X- _ O
-with -X- _ O
-above -X- _ O
-description -X- _ O
-. -X- _ O
+DDX O
+: O
+lung B-Diagnosis
+to I-Diagnosis
+lung I-Diagnosis
+metastasis I-Diagnosis
+, O
+inflammation B-Diagnosis
+. O
 
-Liver -X- _ B-Location
-cysts -X- _ B-Finding
-. -X- _ O
+2. O
+Main B-Attribute
+tumor B-Finding
+in O
+LLL B-Location
+is O
+slightly B-Change
+bigger I-Change
+. O
 
-> -X- _ O
-More -X- _ O
-prominent -X- _ B-Change
-or -X- _ O
-new -X- _ B-Change
-the -X- _ O
-ground -X- _ B-Observation
-- -X- _ I-Observation
-glass -X- _ I-Observation
-opactiy -X- _ I-Observation
-at -X- _ O
-RUL -X- _ B-Location
-( -X- _ O
-Ser -X- _ O
-/ -X- _ O
-Img -X- _ O
-: -X- _ O
-2 -X- _ O
-/ -X- _ O
-12 -X- _ O
-, -X- _ O
-24 -X- _ O
-) -X- _ O
-, -X- _ O
-LUL -X- _ B-Location
-( -X- _ O
-Ser -X- _ O
-/ -X- _ O
-Img -X- _ O
-: -X- _ O
-2 -X- _ O
-/ -X- _ O
-36 -X- _ O
-) -X- _ O
-, -X- _ O
-and -X- _ O
-RLL -X- _ B-Location
-( -X- _ O
-Ser -X- _ O
-/ -X- _ O
-Img -X- _ O
-: -X- _ O
-2 -X- _ O
-/ -X- _ O
-40 -X- _ O
-) -X- _ O
-, -X- _ O
-metastasis -X- _ B-Diagnosis
-cannot -X- _ O
-beruled -X- _ O
-out -X- _ O
-. -X- _ O
+CT O
+evidence O
+of O
+osteopenia B-Finding
+of O
+the O
+visualized O
+bones B-Location
+is O
+seen O
+. O
 
-> -X- _ O
-Enlarged -X- _ B-Size
-lymph -X- _ B-Observation
-node -X- _ I-Observation
-at -X- _ O
-bilateral -X- _ B-Location
-lower -X- _ I-Location
-paratracheal -X- _ I-Location
-space -X- _ I-Location
-, -X- _ O
-subcarina -X- _ B-Location
-, -X- _ O
-right -X- _ B-Location
-hilar -X- _ I-Location
-, -X- _ O
-metastatic -X- _ B-Diagnosis
-lymphadenopathy -X- _ I-Diagnosis
-is -X- _ O
-considered -X- _ O
-, -X- _ O
-no -X- _ B-Change
-significantinterval -X- _ I-Change
-change -X- _ I-Change
-. -X- _ O
+> O
+Persistent B-Attribute
+multiple B-Attribute
+tiny B-Size
+nodules B-Observation
+in O
+bilateral B-Location
+lungs I-Location
+, O
+may O
+becompatible O
+with O
+lung B-Diagnosis
+metastasis I-Diagnosis
+, O
+no B-Change
+change I-Change
+. O
 
-6. -X- _ O
-Otherwise -X- _ O
-, -X- _ O
-no -X- _ O
-significant -X- _ O
-abnormal -X- _ O
-findings -X- _ O
-. -X- _ O
+FINDINGS O
+: O
 
-> -X- _ O
-Enlarged -X- _ B-Size
-lymph -X- _ B-Observation
-node -X- _ I-Observation
-over -X- _ O
-aortocaval -X- _ B-Location
-region -X- _ I-Location
-( -X- _ O
-Ser -X- _ O
-/ -X- _ O
-Img -X- _ O
-: -X- _ O
-3 -X- _ O
-/ -X- _ O
-60 -X- _ O
-) -X- _ O
-, -X- _ O
-measured -X- _ O
-1.3 -X- _ B-Size
-cm -X- _ I-Size
-, -X- _ O
-larger -X- _ B-Change
-compared -X- _ O
-to -X- _ O
-previous -X- _ O
-study -X- _ O
-. -X- _ O
+> O
+Relative O
+swelling B-Finding
+of O
+visible O
+right B-Location
+psoas I-Location
+muscle I-Location
+and O
+rightdiaphragmatic B-Location
+crus I-Location
+( O
+Ser O
+/ O
+Img O
+: O
+3 O
+/ O
+60 O
+) O
+, O
+right O
+adjacent O
+fat B-Finding
+stranding I-Finding
+at O
+retrocaval B-Location
+space I-Location
+. O
 
-Mild -X- _ B-Change
-fibronodular -X- _ B-Attribute
-lesions -X- _ B-Observation
-at -X- _ O
-lateral -X- _ B-Location
-RUL -X- _ I-Location
-and -X- _ O
-tiny -X- _ B-Size
-subpleural -X- _ B-Attribute
-nodules -X- _ B-Observation
-at -X- _ O
-anterior -X- _ B-Location
-RUL -X- _ I-Location
-noted -X- _ O
-. -X- _ O
+2. O
+Status B-Change
+post I-Change
+LUL B-Location
+lobectomy B-Finding
+. O
 
-> -X- _ O
-The -X- _ O
-adrenal -X- _ B-Location
-glands -X- _ I-Location
-were -X- _ O
-normal -X- _ B-Finding
-in -X- _ O
-appearance -X- _ O
-. -X- _ O
+> O
+A O
+LUL B-Location
+lung B-Finding
+cancer I-Finding
+, O
+measured O
+1.9 B-Size
+cm I-Size
+in O
+size O
+currently O
+, O
+with O
+left B-Attribute
+sidepleural I-Attribute
+seeding B-Finding
+. O
 
-- -X- _ O
-Irregular -X- _ B-Attribute
-patch -X- _ B-Attribute
-consolidation -X- _ B-Finding
-and -X- _ O
-ground -X- _ B-Attribute
-glass -X- _ I-Attribute
-infiltration -X- _ B-Finding
-in -X- _ O
-RUL -X- _ B-Location
-posterior -X- _ I-Location
-segment -X- _ I-Location
-, -X- _ O
-more -X- _ B-Size
-than -X- _ I-Size
-1.8 -X- _ I-Size
-cm -X- _ I-Size
-in -X- _ O
-maximal -X- _ O
-dimension -X- _ O
-. -X- _ O
+> O
+More O
+prominent B-Change
+or O
+new B-Change
+pulmonary O
+nodule B-Observation
+over O
+RML B-Location
+( O
+Ser O
+/ O
+Img O
+: O
+2 O
+/ O
+40 O
+) O
+, O
+RLL B-Location
+( O
+Ser O
+/ O
+Img O
+: O
+2 O
+/ O
+38 O
+) O
+, O
+RLL B-Location
+( O
+Ser O
+/ O
+Img O
+: O
+2 O
+/ O
+41 O
+, O
+abutting B-Location
+IVC I-Location
+) O
+, O
+metastasis B-Diagnosis
+cannot O
+beruled O
+out O
+. O
 
-- -X- _ O
-Thickening -X- _ B-Finding
-of -X- _ O
-the -X- _ O
-medial -X- _ B-Location
-and -X- _ I-Location
-lateral -X- _ I-Location
-limb -X- _ I-Location
-junction -X- _ I-Location
-of -X- _ I-Location
-left -X- _ I-Location
-adrenal -X- _ I-Location
-gland -X- _ I-Location
-, -X- _ O
-stable -X- _ B-Change
-. -X- _ O
+> O
+CT O
+evidence O
+of O
+total B-Attribute
+obstructive B-Attribute
+penumonitis B-Finding
+in O
+left B-Location
+lung I-Location
+with O
+decreases B-Finding
+of I-Finding
+the I-Finding
+lung I-Finding
+volume I-Finding
+of O
+left B-Location
+lung I-Location
+, O
+shift B-Finding
+of O
+the O
+mediastinal B-Location
+structures I-Location
+to O
+the O
+left B-Attribute
+side I-Attribute
+, O
+and O
+modetate B-Attribute
+amount I-Attribute
+left B-Location
+side I-Location
+pleural B-Finding
+effusion I-Finding
+with O
+pleural B-Finding
+thickening I-Finding
+is O
+seen O
+, O
+compatible O
+with O
+carcinoma B-Diagnosis
+in O
+left O
+lung O
+with O
+left O
+side O
+pleural B-Diagnosis
+seeding I-Diagnosis
+. O
 
-1. -X- _ O
-Multiple -X- _ B-Attribute
-focal -X- _ B-Attribute
-atelectatic -X- _ B-Attribute
-patches -X- _ B-Finding
-and -X- _ O
-subpleural -X- _ B-Attribute
-reticular -X- _ B-Attribute
-opacities -X- _ B-Observation
-in -X- _ O
-LUL -X- _ B-Location
-and -X- _ O
-bil. -X- _ B-Location
-LL -X- _ I-Location
-, -X- _ O
-stable -X- _ B-Change
-compared -X- _ O
-with -X- _ O
-last -X- _ O
-CT -X- _ O
-( -X- _ O
-2018/10/31 -X- _ O
-) -X- _ O
+DDx O
+: O
+pleural B-Diagnosis
+seeding I-Diagnosis
+, O
+post B-Diagnosis
+inflammation I-Diagnosis
+change I-Diagnosis
+, O
+etc O
+. O
 
-Location -X- _ O
-: -X- _ O
+> O
+s/p B-Change
+left B-Location
+port B-Finding
+- I-Finding
+A I-Finding
+insertion I-Finding
+. O
 
-> -X- _ O
-Some -X- _ B-Attribute
-newly -X- _ B-Change
-found -X- _ O
-nodules -X- _ B-Observation
-at -X- _ O
-RLL -X- _ B-Location
-( -X- _ O
-S -X- _ O
-/ -X- _ O
-I -X- _ O
-: -X- _ O
-2 -X- _ O
-/ -X- _ O
-34 -X- _ O
-, -X- _ O
-45 -X- _ O
-, -X- _ O
-58 -X- _ O
-) -X- _ O
-of -X- _ O
-lungs -X- _ O
-, -X- _ O
-measured -X- _ O
-up -X- _ B-Size
-to -X- _ I-Size
-9 -X- _ I-Size
-mm -X- _ I-Size
-in -X- _ O
-size -X- _ O
-currently -X- _ O
-. -X- _ O
+> O
+No B-Certainty
+significant O
+finding B-Finding
+could O
+be O
+identified O
+in O
+thyroid B-Location
+, O
+GB B-Location
+, O
+pancreas B-Location
+, O
+spleen B-Location
+, O
+bilateral B-Location
+adrenal I-Location
+glands I-Location
+in O
+this O
+study O
+. O
 
-> -X- _ O
-Small -X- _ B-Size
-hypodense -X- _ B-Attribute
-nodule -X- _ B-Observation
-at -X- _ O
-body -X- _ B-Location
-of -X- _ I-Location
-pancreas -X- _ I-Location
-, -X- _ O
-suspect -X- _ O
-side -X- _ B-Diagnosis
-- -X- _ I-Diagnosis
-branch -X- _ I-Diagnosis
-IPMN -X- _ I-Diagnosis
-, -X- _ O
-no -X- _ B-Change
-interval -X- _ I-Change
-change -X- _ I-Change
-. -X- _ O
+1. O
+Multiple B-Attribute
+focal B-Attribute
+atelectatic B-Attribute
+patches B-Finding
+and O
+subpleural B-Attribute
+reticular B-Attribute
+opacities B-Observation
+in O
+LUL B-Location
+and O
+bil. B-Location
+LL I-Location
+, O
+stable B-Change
+compared O
+with O
+last O
+CT O
+( O
+2018/10/31 O
+) O
 
-- -X- _ O
-Enlargement -X- _ B-Finding
-of -X- _ O
-left -X- _ B-Location
-lobe -X- _ I-Location
-of -X- _ I-Location
-thyroid -X- _ I-Location
-gland -X- _ I-Location
-with -X- _ O
-hypodense -X- _ B-Attribute
-lesion -X- _ B-Observation
-and -X- _ O
-calcifications -X- _ B-Finding
-. -X- _ O
+Mild B-Change
+increased B-Change
+amount O
+. O
 
-Impressions -X- _ O
-: -X- _ O
+2. O
+Tumor O
+location O
+/ O
+Size O
+: O
 
-- -X- _ O
-s/p -X- _ B-Change
-cholecystectomy -X- _ B-Finding
-. -X- _ O
+> O
+Present O
+of O
+subpleural B-Attribute
+nodule B-Observation
+at O
+right B-Location
+major I-Location
+fissue I-Location
+( O
+Ser O
+/ O
+Img O
+: O
+2 O
+/ O
+33 O
+) O
+, O
+stable B-Change
+. O
 
-No -X- _ B-Change
-local -X- _ B-Attribute
-tumor -X- _ B-Finding
-recurrence -X- _ B-Change
-. -X- _ O
+Impression O
+: O
 
-> -X- _ O
-No -X- _ B-Certainty
-definite -X- _ O
-enlarged -X- _ B-Size
-LNs -X- _ B-Observation
-in -X- _ O
-the -X- _ O
-mediastinum -X- _ B-Location
-. -X- _ O
+Recommend O
+clinical O
+correlation O
+. O
 
-> -X- _ O
-Present -X- _ O
-of -X- _ O
-subpleural -X- _ B-Attribute
-nodule -X- _ B-Observation
-at -X- _ O
-right -X- _ B-Location
-major -X- _ I-Location
-fissue -X- _ I-Location
-( -X- _ O
-Ser -X- _ O
-/ -X- _ O
-Img -X- _ O
-: -X- _ O
-2 -X- _ O
-/ -X- _ O
-33 -X- _ O
-) -X- _ O
-, -X- _ O
-stable -X- _ B-Change
-. -X- _ O
+> O
+s/p B-Change
+RUL B-Location
+lobectomy B-Finding
+, O
+with O
+post B-Finding
+- I-Finding
+operative I-Finding
+change I-Finding
+, O
+no B-Change
+evidence I-Change
+ofrecurrence I-Change
+. O
 
-> -X- _ O
-Interlobar -X- _ B-Attribute
-fissural -X- _ B-Attribute
-- -X- _ I-Attribute
-based -X- _ I-Attribute
-soft -X- _ B-Attribute
-tissue -X- _ I-Attribute
-consolidation -X- _ B-Finding
-at -X- _ O
-RUL -X- _ B-Location
-of -X- _ O
-lung -X- _ O
-, -X- _ O
-with -X- _ O
-air -X- _ B-Finding
-- -X- _ I-Finding
-bronchogram -X- _ I-Finding
-and -X- _ O
-pleural -X- _ B-Finding
-reactions -X- _ I-Finding
-, -X- _ O
-compatible -X- _ O
-with -X- _ O
-lung -X- _ B-Diagnosis
-cancer -X- _ I-Diagnosis
-. -X- _ O
+> O
+A O
+normal B-Certainty
+- O
+sized O
+lymph B-Observation
+node I-Observation
+is O
+seen O
+in O
+the O
+pre B-Location
+- I-Location
+tracheal I-Location
+region I-Location
+of I-Location
+the I-Location
+middle I-Location
+mediastinum I-Location
+. O
 
-> -X- _ O
-Spiculated -X- _ B-Attribute
-nodule -X- _ B-Observation
-at -X- _ O
-RUL -X- _ B-Location
-of -X- _ O
-lung -X- _ O
-with -X- _ O
-pleural -X- _ B-Finding
-traction -X- _ I-Finding
-, -X- _ O
-bilaterallung -X- _ B-Location
-nodules -X- _ B-Observation
-. -X- _ O
+- O
+s/p B-Change
+wegde B-Finding
+resection I-Finding
+with O
+suture B-Attribute
+of O
+RML B-Location
+with O
+post B-Finding
+- I-Finding
+op I-Finding
+. I-Finding
+change I-Finding
+. O
 

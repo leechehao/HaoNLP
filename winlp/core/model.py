@@ -151,9 +151,7 @@ class Module(L.LightningModule):
         Returns:
             Union[Sequence[L.Callback], L.Callback]: 一個或多個回調函數。
         """
-        print(self.__class__.__module__)
-        print(self.__class__.__name__)
-        calback = MLflowModelCheckpoint(subclass_path=self.__class__.__module__, subclass_name=self.__class__.__name__)
+        calback = MLflowModelCheckpoint(monitor=self.monitor, mode=self.mode, subclass_path=self.__class__.__module__, subclass_name=self.__class__.__name__)
         return [calback]
 
     def log_onnx_model(self) -> None:
@@ -196,8 +194,8 @@ class MLflowModelCheckpoint(L.pytorch.callbacks.ModelCheckpoint):
 
     主要功能是在訓練過程中選擇最佳模型檢查點，然後將該模型保存到 MLflow 中，以便進行後續的實驗追蹤和模型部署。
     """
-    def __init__(self, subclass_path: str, subclass_name: str) -> None:
-        super().__init__()
+    def __init__(self, monitor: str, mode: types.MonitorModeType, subclass_path: str, subclass_name: str) -> None:
+        super().__init__(monitor=monitor, mode=mode)
         self.subclass_path = subclass_path
         self.subclass_name = subclass_name
 
