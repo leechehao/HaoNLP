@@ -20,3 +20,5 @@ trainer:
     tracking_uri: http://192.168.1.76:9527
 
 test: True
+
+run_id: 52ce6a88aa0c45c798e00209a27f1fa7

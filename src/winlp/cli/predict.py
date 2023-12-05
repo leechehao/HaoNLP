@@ -49,6 +49,6 @@ def convert_float(obj):
 
 
 if __name__ == "__main__":
-    # python winlp/cli/predict.py --inputs='New nodule at right lower lung.' --tracking_uri=/home/bryant/MyMLOps/exp --run_id
-    # python winlp/cli/predict.py --input_file=gg.csv --key=text --batch_size=16 --tracking_uri=/home/bryant/MyMLOps/exp --run_id
+    # python winlp/cli/predict.py --inputs='New nodule at right lower lung.' --tracking_uri=http://192.168.1.76:9527 --run_id
+    # python winlp/cli/predict.py --input_file=gg.csv --key=text --batch_size=16 --tracking_uri=http://192.168.1.76:9527 --run_id
     main()
