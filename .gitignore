@@ -1,3 +1,21 @@
+# Notenook
 *.ipynb
-__pycache__
-.vscode
+
+# Byte-compiled
+__pycache__/
+
+# Python egg metadata, regenerated from source files by setuptools.
+*.egg-info/
+
+# PyPI distribution artifacts.
+build/
+dist/
+
+# Tests
+.pytest_cache/
+
+# PyCharm/vscode
+.vscode/
+
+# dataset
+datasets_hub/

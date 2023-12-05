@@ -31,10 +31,13 @@ class TestTextClassificationDataModule(unittest.TestCase):
 
     @patch("datasets.Dataset.map")
     @patch.object(TextClassificationDataModule, "_prepare_label_list")
-    def test_process_data_train(self, mock_prepare_label_list, mock_map):
+    @patch("datasets.Dataset.class_encode_column")
+    def test_process_data_train(self, mock_class_encode_column, mock_prepare_label_list, mock_map):
+        mock_class_encode_column.return_value = datasets.Dataset
         self.data_module.process_data(datasets.Dataset, TRAIN)
         mock_map.call_args[0][0]({TEXTS: "dummy_text_1"})
 
+        mock_class_encode_column.assert_called_once_with(self.data_module.label_column_name)
         mock_prepare_label_list.assert_called_once()
         mock_map.assert_called_once()
         self.data_module.tokenizer.assert_called_once_with(
@@ -47,10 +50,13 @@ class TestTextClassificationDataModule(unittest.TestCase):
 
     @patch("datasets.Dataset.map")
     @patch.object(TextClassificationDataModule, "_prepare_label_list")
-    def test_process_data_val_test(self, mock_prepare_label_list, mock_map):
+    @patch("datasets.Dataset.class_encode_column")
+    def test_process_data_val_test(self, mock_class_encode_column, mock_prepare_label_list, mock_map):
+        mock_class_encode_column.return_value = datasets.Dataset
         self.data_module.process_data(datasets.Dataset, None)
         mock_map.call_args[0][0]({TEXTS: "dummy_text_1"})
 
+        mock_class_encode_column.assert_called_once_with(self.data_module.label_column_name)
         mock_prepare_label_list.assert_not_called()
         mock_map.assert_called_once()
         self.data_module.tokenizer.assert_called_once_with(

@@ -1,4 +1,4 @@
-import importlib
+import os
 
 import hydra
 import mlflow
@@ -13,8 +13,13 @@ from winlp.core import utils
 
 torch.set_float32_matmul_precision("high")
 
+winlp_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+default_config_path = os.path.join(winlp_dir, "../winlp_conf")
 
-@hydra.main(version_base=None, config_path="../../conf", config_name="config")
+CONFIG_PATH = os.getenv("WINLP_CONFIG_PATH", default_config_path)
+
+
+@hydra.main(version_base=None, config_path=CONFIG_PATH, config_name="config")
 def main(cfg: DictConfig) -> None:
     # ===== 檢查參數缺失值 =====
     utils.check_missing_value(cfg)
