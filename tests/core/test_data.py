@@ -15,8 +15,8 @@ class TestDataModule(unittest.TestCase):
         mock_cpu_count.return_value = 8
         mock_tokenizer.return_value = MagicMock()
         self.data_module = DataModule(
-            dataset_name="dummy_dataset",  # "datasets_hub/text_classification/imdb_sentiment_classification"
-            pretrained_model_name_or_path="dummy_model", # "distilbert-base-uncased"
+            dataset_name=["dummy_dataset_1", "dummy_dataset_2"],
+            pretrained_model_name_or_path="dummy_model",
             label_column_name="dummy_column_name",
             max_length=512,
             batch_size=16
@@ -26,8 +26,8 @@ class TestDataModule(unittest.TestCase):
         mock_tokenizer.assert_called_once_with("dummy_model")
 
     def test_init(self):
-        self.assertEqual(self.data_module.dataset_name, "dummy_dataset") # "datasets_hub/text_classification/imdb_sentiment_classification"
-        self.assertEqual(self.data_module.pretrained_model_name_or_path, "dummy_model")  # "distilbert-base-uncased"
+        self.assertEqual(self.data_module.dataset_name, ["dummy_dataset_1", "dummy_dataset_2"])
+        self.assertEqual(self.data_module.pretrained_model_name_or_path, "dummy_model")
         self.assertEqual(self.data_module.label_column_name, "dummy_column_name")
         self.assertEqual(self.data_module.max_length, 512)
         self.assertEqual(self.data_module.batch_size, 16)
@@ -37,63 +37,81 @@ class TestDataModule(unittest.TestCase):
 
     @patch("datasets.DatasetDict.set_format")
     @patch("winlp.core.DataModule.process_data")
+    @patch("datasets.concatenate_datasets")
     @patch("datasets.load_dataset")
     def test_setup(
         self,
         mock_dataset,
+        mock_concatenate_datasets,
         mock_processed_data,
         mock_formatted_dataset_dict,
         stage = None,
     ):
         if stage == "fit":
-            dummy_data = {
+            dataset = Dataset.from_dict({
                 "dummy_texts": ["dummy_text_1", "dummy_text_2", "dummy_text_3"],
                 "dummy_labels": [1, 0, 1],
-            }
-            mock_dataset.return_value = [Dataset.from_dict(dummy_data), Dataset.from_dict(dummy_data)]
-            mock_processed_data.return_value = DatasetDict(
+            })
+            mock_dataset.return_value = dataset
+            mock_concatenate_datasets.return_value = dataset
+            mock_processed_data.return_value = dataset
+            mock_formatted_dataset_dict.return_value = DatasetDict(
                 {
-                    "train": mock_dataset.return_value[0],
-                    "validation": mock_dataset.return_value[1],
+                    "train": dataset,
+                    "validation": dataset,
                 }
             )
-            mock_formatted_dataset_dict.return_value = mock_processed_data()
             self.data_module.setup(stage="fit")
 
+            self.assertEqual(mock_dataset.call_count, 4)
+            self.assertEqual(mock_concatenate_datasets.call_count, 2)
+            self.assertEqual(mock_processed_data.call_count, 2)
+            mock_formatted_dataset_dict.assert_called_once()
             self.assertIsInstance(self.data_module.dataset, DatasetDict)
             self.assertIn("train", self.data_module.dataset)
             self.assertIn("validation", self.data_module.dataset)
         elif stage == "test":
-            dummy_data = {
+            dataset = Dataset.from_dict({
                 "dummy_texts": ["dummy_text_1", "dummy_text_2", "dummy_text_3"],
                 "dummy_labels": [1, 0, 1],
-            }
-            mock_dataset.return_value = [Dataset.from_dict(dummy_data)]
-            mock_processed_data.return_value = DatasetDict(
+            })
+            mock_dataset.return_value = dataset
+            mock_concatenate_datasets.return_value = dataset
+            mock_processed_data.return_value = dataset
+            mock_formatted_dataset_dict.return_value = DatasetDict(
                 {
-                    "test": mock_dataset.return_value[0],
+                    "test": dataset,
                 }
             )
-            mock_formatted_dataset_dict.return_value = mock_processed_data()
             self.data_module.setup(stage="test")
 
+            self.assertEqual(mock_dataset.call_count, 2)
+            self.assertEqual(mock_concatenate_datasets.call_count, 1)
+            self.assertEqual(mock_processed_data.call_count, 1)
+            mock_formatted_dataset_dict.assert_called_once()
             self.assertIsInstance(self.data_module.dataset, DatasetDict)
             self.assertIn("test", self.data_module.dataset)
         else:
-            dummy_data = {
+            dataset = Dataset.from_dict({
                 "dummy_texts": ["dummy_text_1", "dummy_text_2", "dummy_text_3"],
                 "dummy_labels": [1, 0, 1],
-            }
-            mock_dataset.return_value = DatasetDict(
+            })
+            mock_dataset.return_value = dataset
+            mock_concatenate_datasets.return_value = dataset
+            mock_processed_data.return_value = dataset
+            mock_formatted_dataset_dict.return_value = DatasetDict(
                 {
-                    "train": Dataset.from_dict(dummy_data),
-                    "validation": Dataset.from_dict(dummy_data),
-                    "test": Dataset.from_dict(dummy_data),
+                    "train": dataset,
+                    "validation": dataset,
+                    "test": dataset,
                 }
             )
-            mock_formatted_dataset_dict.return_value = mock_processed_data()
             self.data_module.setup(stage=None)
 
+            self.assertEqual(mock_dataset.call_count, 6)
+            self.assertEqual(mock_concatenate_datasets.call_count, 3)
+            self.assertEqual(mock_processed_data.call_count, 3)
+            mock_formatted_dataset_dict.assert_called_once()
             self.assertIsInstance(self.data_module.dataset, DatasetDict)
             self.assertIn("train", self.data_module.dataset)
             self.assertIn("validation", self.data_module.dataset)

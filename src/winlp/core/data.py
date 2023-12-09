@@ -20,7 +20,7 @@ class DataModule(L.LightningDataModule):
 
     def __init__(
         self,
-        dataset_name: str,
+        dataset_name: list[str],
         pretrained_model_name_or_path: str,
         label_column_name: str,
         max_length: int = 512,
@@ -31,7 +31,7 @@ class DataModule(L.LightningDataModule):
         初始化 DataModule。
 
         Args:
-            dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
+            dataset_name (list[str]): 數據集的名稱。遵從 Hugging Face dataset 格式。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_column_name (str): 資料集裡標籤的欄位名稱。
             max_length (int, optional): 在 tokenization 過程中序列的最大長度。預設為 512。
@@ -57,13 +57,23 @@ class DataModule(L.LightningDataModule):
             stage (str): `fit`、`validate`、`test` 或 `predict`。
         """
         if stage == "fit":
-            dataset_list = datasets.load_dataset(path=self.dataset_name, split=[types.SplitType.TRAIN, types.SplitType.VALIDATION])
-            dataset_dict = datasets.DatasetDict({types.SplitType.TRAIN: dataset_list[0], types.SplitType.VALIDATION: dataset_list[1]})
+            dataset_dict = datasets.DatasetDict({
+                split: datasets.concatenate_datasets(
+                    [datasets.load_dataset(dataset_name, split=split) for dataset_name in self.dataset_name]
+                ) for split in [types.SplitType.TRAIN, types.SplitType.VALIDATION]
+            })
         elif stage == "test":
-            dataset = datasets.load_dataset(path=self.dataset_name, split=types.SplitType.TEST)
-            dataset_dict = datasets.DatasetDict({types.SplitType.TEST: dataset})
+            dataset_dict = datasets.DatasetDict({
+                types.SplitType.TEST: datasets.concatenate_datasets(
+                    [datasets.load_dataset(dataset_name, split=types.SplitType.TEST) for dataset_name in self.dataset_name]
+                )
+            })
         else:
-            dataset_dict = datasets.load_dataset(path=self.dataset_name)
+            dataset_dict = datasets.DatasetDict({
+                split: datasets.concatenate_datasets(
+                    [datasets.load_dataset(dataset_name, split=split) for dataset_name in self.dataset_name]
+                ) for split in [types.SplitType.TRAIN, types.SplitType.VALIDATION, types.SplitType.TEST]
+            })
 
         for split in dataset_dict:
             dataset_dict[split] = self.process_data(dataset_dict[split], split)

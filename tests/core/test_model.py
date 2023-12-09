@@ -101,6 +101,8 @@ class TestModule(unittest.TestCase):
         self.model.configure_callbacks()
 
         mock_MLflowModelCheckpoint.assert_called_once_with(
+            monitor=self.model.monitor,
+            mode=self.model.mode,
             subclass_path=self.model.__class__.__module__,
             subclass_name=self.model.__class__.__name__,
         )

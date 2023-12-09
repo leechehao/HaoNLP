@@ -2,4 +2,5 @@
 defaults:
   - token_classification/default  # conf/dataset/token_classification/default.yaml
   
-dataset_name: /home/bryant/MyMLOps/datasets_hub/token_classification/chest_ct_ner
+dataset_name:
+  - /home/bryant/MyMLOps/datasets_hub/token_classification/chest_ct_ner
