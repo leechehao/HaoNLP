@@ -158,6 +158,10 @@ class Module(L.LightningModule):
         """
         將模型轉成 onnx 格式並上傳 MLflow
 
+        onnx 使用 GPU 必要條件:
+            conda install -c anaconda cudatoolkit
+            conda install -c conda-forge cudnn
+        
         Example:
             (1):
                 ort_session = onnxruntime.InferenceSession("model.onnx", providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
@@ -165,7 +169,7 @@ class Module(L.LightningModule):
             (2):
                 onnx_model = mlflow.onnx.load_model(onnx_model_uri)
                 serialized_model = onnx_model.SerializeToString()
-                ort_session = onnxruntime.InferenceSession(serialized_model)
+                ort_session = onnxruntime.InferenceSession(serialized_model, providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
                 ort_session.run(None, dict(tokenizer(test_sentence, return_tensors="np")))
         """
         self.eval()

@@ -1,4 +1,5 @@
 import os
+import json
 
 import hydra
 import mlflow
@@ -30,7 +31,13 @@ def main(cfg: DictConfig) -> None:
     # checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{cfg.run_id}/model/state_dict.pth")
     # logged_model = getattr(importlib.import_module(module_name), class_name).load_from_checkpoint(checkpoint_path)
     logged_model = mlflow.pytorch.load_model(f"runs:/{cfg.run_id}/model")
-    trainer.test(logged_model, data_module)
+    score = trainer.test(logged_model, data_module)
+
+    if not os.path.exists("./score.json"):
+        with open("score.json", "w") as json_file:
+            json.dump(score, json_file)
+    else:
+        print(f"The file './score.json' already exists!")
 
 
 if __name__ == "__main__":
