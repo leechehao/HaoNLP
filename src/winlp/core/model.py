@@ -158,9 +158,12 @@ class Module(L.LightningModule):
         """
         將模型轉成 onnx 格式並上傳 MLflow
 
-        onnx 使用 GPU 必要條件:
-            conda install -c anaconda cudatoolkit
-            conda install -c conda-forge cudnn
+        onnxruntime-gpu (1.16.3) 使用 GPU 的先決條件:
+            (一):
+                conda install -c anaconda cudatoolkit (11.8.0)
+                conda install -c conda-forge cudnn (8.9.2.26)
+            (二):
+                使用 nvidia/cuda:11.6.1-cudnn8-runtime-ubuntu20.04 的 image，cuda 須為 11.x，cudnn 則為 8.x
         
         Example:
             (1):
