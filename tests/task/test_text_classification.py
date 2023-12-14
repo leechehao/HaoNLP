@@ -17,7 +17,7 @@ class TestTextClassificationDataModule(unittest.TestCase):
     def setUp(self, mock_tokenizer):
         mock_tokenizer.return_value = MagicMock()
         self.data_module = TextClassificationDataModule(
-            dataset_name="dummy_dataset",
+            dataset_name=["dummy_dataset"],
             pretrained_model_name_or_path="dummy_model",
             label_column_name="dummy_column_name",
             max_length=512,
@@ -104,7 +104,7 @@ class TestTextClassificationTrain(unittest.TestCase):
 
     def test_train(self):
         data_module = TextClassificationDataModule(
-            dataset_name="/tmp2/ken/MyMLOps/datasets_hub/text_classification/imdb_sentiment_classification",
+            dataset_name=["/tmp2/ken/MyMLOps/datasets_hub/text_classification/imdb_sentiment_classification"],
             pretrained_model_name_or_path="distilbert-base-uncased",
             label_column_name="labels",
         )

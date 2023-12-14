@@ -16,7 +16,7 @@ class TokenClassificationDataModule(DataModule):
 
     def __init__(
         self,
-        dataset_name: str,
+        dataset_name: list[str],
         pretrained_model_name_or_path: str,
         label_column_name: str,
         label_all_tokens: bool = False,
@@ -26,7 +26,7 @@ class TokenClassificationDataModule(DataModule):
         初始化 TokenClassificationDataModule。
 
         Args:
-            dataset_name (str): 數據集的名稱。遵從 Hugging Face dataset 格式。
+            dataset_name (list[str]): 數據集的名稱。遵從 Hugging Face dataset 格式。
             pretrained_model_name_or_path (str): 預訓練模型的名稱或路徑。
             label_column_name (str): 資料集裡標籤的欄位名稱。
             label_all_tokens (bool, optional): 是否標記所有的 tokens。預設為 False。

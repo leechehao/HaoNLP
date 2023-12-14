@@ -3,6 +3,7 @@ from typing import Optional
 import mlflow
 from omegaconf import DictConfig, OmegaConf
 from omegaconf.errors import MissingMandatoryValue
+from git import Repo
 
 
 def check_missing_value(cfg: DictConfig) -> None:
@@ -19,6 +20,7 @@ def mlflow_setup(
     mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment(experiment_id=experiment_id)
     mlflow.start_run(run_id=run_id)
+    mlflow.set_tag("mlflow.source.git.commit", Repo(".").head.commit.hexsha)
 
 
 def log_config(cfg: DictConfig, hycfg: DictConfig, artifact_file: str) -> None:

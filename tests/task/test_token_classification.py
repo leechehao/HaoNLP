@@ -20,7 +20,7 @@ class TestTokenClassificationDataModule(unittest.TestCase):
     def setUp(self):
         with patch("transformers.AutoTokenizer.from_pretrained") as mock_tokenzier:
             self.data_module = TokenClassificationDataModule(
-                dataset_name="dummy_dataset_name",
+                dataset_name=["dummy_dataset_name"],
                 pretrained_model_name_or_path="dummy_pretrained_model_name_or_path",
                 label_column_name="dummy_label_column_name",
             )
@@ -105,7 +105,7 @@ class TestTokenClassificationModule(unittest.TestCase):
 def test_train():
     pretrained_model_name_or_path = "prajjwal1/bert-tiny"
     data_module = TokenClassificationDataModule(
-        dataset_name="/home/bryant/MyMLOps/datasets_hub/token_classification/chest_ct_ner",
+        dataset_name=["/home/bryant/MyMLOps/datasets_hub/token_classification/chest_ct_ner"],
         pretrained_model_name_or_path=pretrained_model_name_or_path,
         label_column_name="ner_tags",
     )
