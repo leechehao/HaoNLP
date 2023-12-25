@@ -13,3 +13,16 @@ hydra:
   output_subdir: null
   run:
     dir: .
+  # mode: MULTIRUN
+  # sweeper:
+  #   params:
+  #     dataset.batch_size: 1        # 整數列表
+  #     task.learning_rate: 1e-05    # 浮點數
+  #     task.weight_decay: 0.01      # 浮點數
+  #     task.warmup_ratio: 0.0       # 浮點數
+  #     dataset.num_workers: 2       # 整數
+  #     dataset.max_length: 4,8      # 整數列表
+  #     trainer.max_epochs: 1        # 整數
+  #     task.pretrained_model_name_or_path: smiller324/imdb_tinybert,prajjwal1/bert-tiny  # 字符串列表
+  #     seed: 888
+  # 共跑4次實驗組
