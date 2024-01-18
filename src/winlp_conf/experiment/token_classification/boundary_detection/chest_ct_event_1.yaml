@@ -1,7 +1,7 @@
 # @package _global_
 defaults:
   - override /dataset: boundary_detection/chest_ct_event.yaml
-  - override /task: token_classification
+  - override /task: boundary_detection
   - _self_
 
 dataset:
@@ -17,7 +17,7 @@ trainer:
   max_epochs: 20
   logger:
     experiment_name: Chest_CT_Event
-    run_name: run_1
+    run_name: run_2
     tracking_uri: http://192.168.1.76:9527
 
 test: True
