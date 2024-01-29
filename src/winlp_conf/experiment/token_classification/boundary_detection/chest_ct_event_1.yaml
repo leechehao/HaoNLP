@@ -16,8 +16,8 @@ task:
 trainer:
   max_epochs: 20
   logger:
-    experiment_name: Chest_CT_Event
-    run_name: run_2
-    tracking_uri: http://192.168.1.76:9527
+    experiment_name: Chest-CT-Event-Segmentation
+    run_name: run_1
+    tracking_uri: http://192.168.1.76:9487
 
 test: True
