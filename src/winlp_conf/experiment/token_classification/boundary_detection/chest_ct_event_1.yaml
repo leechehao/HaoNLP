@@ -1,11 +1,11 @@
 # @package _global_
 defaults:
-  - override /dataset: token_classification/chest_ct_ner.yaml
-  - override /task: token_classification
+  - override /dataset: boundary_detection/chest_ct_event.yaml
+  - override /task: boundary_detection
   - _self_
 
 dataset:
-  batch_size: 8
+  batch_size: 4
   max_length: 512
 task:
   pretrained_model_name_or_path: microsoft/deberta-v3-base
@@ -16,7 +16,7 @@ task:
 trainer:
   max_epochs: 20
   logger:
-    experiment_name: Chest-CT-NER
+    experiment_name: Chest-CT-Event-Segmentation
     run_name: run_1
     tracking_uri: http://192.168.1.76:9487
 
