@@ -61,7 +61,8 @@ class Module(L.LightningModule):
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
         self.warmup_ratio = warmup_ratio
-        self._hf_pipeline = None
+        self._hf_pipeline: Optional[transformers.pipeline] = None
+        self.train_log_text: Optional[str] = None
 
     def setup(self, stage: str) -> None:
         """
@@ -127,6 +128,14 @@ class Module(L.LightningModule):
         """
         self.eval()
         return self.hf_pipeline(inputs, *args, **kwargs)
+
+    def upload_train_log(self) -> None:
+        """
+        上傳訓練過程的 log 至 mlflow。
+        """
+        if self.train_log_text is None:
+            return
+        self.logger.experiment.log_text(text=self.train_log_text, artifact_file="train.log", run_id=self.logger.run_id)
 
     def configure_optimizers(self) -> Tuple[Sequence[Optimizer], Sequence[dict]]:
         """

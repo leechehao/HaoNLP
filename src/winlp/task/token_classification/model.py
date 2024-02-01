@@ -4,6 +4,7 @@ import torch
 import transformers
 import torchmetrics
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
+from sklearn.metrics import classification_report
 
 from winlp.core import Module, types
 
@@ -44,6 +45,9 @@ class TokenClassificationModule(Module):
         )
         self.label_all_tokens = label_all_tokens
         self.best_metric = float("-inf") if mode == types.MonitorModeType.MAX else float("inf")
+        self.validation_step_outputs = []
+        self.test_step_outputs = []
+        self.validation_reports = []
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.TokenClassifierOutput:
         """
@@ -97,10 +101,13 @@ class TokenClassificationModule(Module):
         outputs = self.model(**batch)
         loss, logits = outputs[:2]
         preds = torch.argmax(logits, dim=2)
-        metric_dict = self.compute_metrics(preds, batch[types.LABELS], mode=prefix)
+        labels = batch[types.LABELS]
+        active_preds = preds[labels != -100]
+        active_labels = labels[labels != -100]
+        metric_dict = self.compute_metrics(active_preds, active_labels, mode=prefix)
         self.log_dict(metric_dict, prog_bar=True, on_step=False, on_epoch=True)
         self.log(f"{prefix}_loss", loss, prog_bar=True, sync_dist=True)
-        return loss
+        return active_preds.cpu(), active_labels.cpu()
 
     def validation_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
         """
@@ -113,13 +120,18 @@ class TokenClassificationModule(Module):
         Returns:
             torch.Tensor: 驗證損失。
         """
-        return self.common_step("val", batch)
+        active_preds, active_labels = self.common_step("val", batch)
+        self.validation_step_outputs.append((active_preds, active_labels))
 
     def on_validation_epoch_end(self):
         current_metric = self.trainer.callback_metrics[self.monitor].item()
         if (self.mode == types.MonitorModeType.MIN and current_metric < self.best_metric) or (self.mode == types.MonitorModeType.MAX and current_metric > self.best_metric):
             self.best_metric = current_metric
         self.log(f"best_{self.monitor}", self.best_metric)
+
+        report = self.build_reports(mode="val")
+        self.validation_reports.append(report)
+        self.validation_step_outputs.clear()
 
     def test_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
         """
@@ -132,7 +144,15 @@ class TokenClassificationModule(Module):
         Returns:
             torch.Tensor: 測試損失。
         """
-        return self.common_step("test", batch)
+        active_preds, active_labels = self.common_step("test", batch)
+        self.test_step_outputs.append((active_preds, active_labels))
+
+    def on_test_epoch_end(self):
+        report = self.build_reports(mode="test")
+        self.logger.experiment.log_text(text=report, artifact_file="test.log", run_id=self.logger.run_id)
+
+    def on_fit_end(self):
+        self.train_log_text = "\n".join([f"Epoch {i+1}:\n{report}" for i, report in enumerate(self.validation_reports[1:])])
 
     def compute_metrics(self, predictions: torch.Tensor, labels: torch.Tensor, mode="val") -> dict[str, torch.Tensor]:
         """
@@ -146,9 +166,28 @@ class TokenClassificationModule(Module):
         Returns:
             dict[str, torch.Tensor]: 包含度量指標結果的字典。
         """
-        predictions = predictions[labels != -100]
-        labels = labels[labels != -100]
         return {f"{mode}_{k}": metric(predictions, labels) for k, metric in self.metrics.items()}
+
+    def build_reports(self, mode: str) -> str:
+        if mode == "val":
+            step_outputs = self.validation_step_outputs
+        elif mode == "test":
+            step_outputs = self.test_step_outputs
+        else:
+            raise ValueError("The value of mode must be either 'val' or 'test'.")
+
+        active_preds = torch.cat([output[0] for output in step_outputs])
+        active_labels = torch.cat([output[1] for output in step_outputs])
+        report = classification_report(
+            active_labels,
+            active_preds,
+            labels=list(range(len(self.label_list))),
+            target_names=self.label_list,
+            digits=4,
+            zero_division=0.0,
+        )
+        print(report)
+        return report
 
     @property
     def hf_pipeline_task(self):

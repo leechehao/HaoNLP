@@ -45,6 +45,9 @@ def main(cfg: DictConfig) -> None:
     # ===== 訓練 =====
     trainer.fit(model, data_module.train_dataloader(), data_module.val_dataloader())
 
+    # ===== 上傳訓練 log =====
+    model.upload_train_log()
+
     # ===== 上傳 onnx 模型 =====
     # module_name, class_name = cfg.task._target_.rsplit(".", 1)
     # checkpoint_path = mlflow.artifacts.download_artifacts(f"runs:/{mlflow.active_run().info.run_id}/model/state_dict.pth")
