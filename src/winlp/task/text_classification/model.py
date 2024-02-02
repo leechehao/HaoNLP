@@ -3,7 +3,7 @@ from typing import Any, Type
 import torch
 import transformers
 from transformers.models.auto.auto_factory import _BaseAutoModelClass
-from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score, classification_report
 
 from winlp.core import Module, types
 
@@ -59,6 +59,9 @@ class TextClassificationModule(Module):
             **kwargs,
         )
         self.best_metric = float("-inf") if mode == types.MonitorModeType.MAX else float("inf")
+        self.validation_step_outputs = []
+        self.test_step_outputs = []
+        self.validation_reports = []
 
     def forward(self, batch: Any) -> transformers.modeling_outputs.SequenceClassifierOutput:
         """
@@ -96,11 +99,12 @@ class TextClassificationModule(Module):
             batch (Any): 輸入到模型的批次資料。
         """
         loss, logits = self.model(**batch)[:2]
-        preds = torch.argmax(logits, dim=1)
-        accuracy = classification_report(batch[types.LABELS].cpu(), preds.cpu(), output_dict=True, zero_division=0)["accuracy"]
-
+        preds = torch.argmax(logits, dim=1).cpu()
+        labels = batch[types.LABELS].cpu()
+        accuracy = accuracy_score(labels, preds)
         self.log(f"{prefix}_loss", loss, prog_bar=True, on_step=False, on_epoch=True)
         self.log(f"{prefix}_accuracy", accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        return preds, labels
 
     def validation_step(self, batch: Any, batch_idx: int) -> None:
         """
@@ -110,13 +114,18 @@ class TextClassificationModule(Module):
             batch (Any): 輸入到模型的批次資料。
             batch_idx (int): 批次索引。
         """
-        self.common_step("val", batch)
+        preds, labels = self.common_step("val", batch)
+        self.validation_step_outputs.append((preds, labels))
 
     def on_validation_epoch_end(self):
         current_metric = self.trainer.callback_metrics[self.monitor].item()
         if (self.mode == types.MonitorModeType.MIN and current_metric < self.best_metric) or (self.mode == types.MonitorModeType.MAX and current_metric > self.best_metric):
             self.best_metric = current_metric
         self.log(f"best_{self.monitor}", self.best_metric)
+
+        report = self.build_reports(mode="val")
+        self.validation_reports.append(report)
+        self.validation_step_outputs.clear()
 
     def test_step(self, batch: Any, batch_idx: int) -> None:
         """
@@ -126,7 +135,36 @@ class TextClassificationModule(Module):
             batch (Any): 輸入到模型的批次資料。
             batch_idx (int): 批次索引。
         """
-        self.common_step("test", batch)
+        preds, labels = self.common_step("test", batch)
+        self.test_step_outputs.append((preds, labels))
+
+    def on_test_epoch_end(self):
+        report = self.build_reports(mode="test")
+        self.logger.experiment.log_text(text=report, artifact_file="test.log", run_id=self.logger.run_id)
+
+    def on_fit_end(self):
+        self.train_log_text = "\n".join([f"Epoch {i+1}:\n{report}" for i, report in enumerate(self.validation_reports[1:])])
+
+    def build_reports(self, mode: str) -> str:
+        if mode == "val":
+            step_outputs = self.validation_step_outputs
+        elif mode == "test":
+            step_outputs = self.test_step_outputs
+        else:
+            raise ValueError("The value of mode must be either 'val' or 'test'.")
+
+        preds = torch.cat([output[0] for output in step_outputs])
+        labels = torch.cat([output[1] for output in step_outputs])
+        report = classification_report(
+            labels,
+            preds,
+            labels=list(range(len(self.label_list))),
+            target_names=self.label_list,
+            digits=4,
+            zero_division=0.0,
+        )
+        print(report)
+        return report
 
     @property
     def hf_pipeline_task(self):
