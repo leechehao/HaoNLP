@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /dataset: token_classification/chest_ct.yaml
+  - override /dataset: token_classification/chest_ct_ner.yaml
   - override /task: token_classification
   - _self_
 
@@ -16,7 +16,7 @@ task:
 trainer:
   max_epochs: 20
   logger:
-    experiment_name: Chest-CT
+    experiment_name: Chest-CT-NER
     run_name: run_1
     tracking_uri: http://192.168.1.76:9487
 

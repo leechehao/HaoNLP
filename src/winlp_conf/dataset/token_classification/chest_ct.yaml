@@ -1,0 +1,7 @@
+# @package dataset
+defaults:
+  - token_classification/default  # conf/dataset/token_classification/default.yaml
+  
+dataset_name:
+  - /home/bryant/Chest-CT-NER/chest_ct_ner/program_data/chest_ct_ner
+  - /home/bryant/Chest-CT-RE/chest_ct_re/program_data/chest_ct_re

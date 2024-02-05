@@ -56,22 +56,23 @@ class DataModule(L.LightningDataModule):
         Args:
             stage (str): `fit`、`validate`、`test` 或 `predict`。
         """
+        download_mode = datasets.download.download_manager.DownloadMode.FORCE_REDOWNLOAD
         if stage == "fit":
             dataset_dict = datasets.DatasetDict({
                 split: datasets.concatenate_datasets(
-                    [datasets.load_dataset(dataset_name, split=split) for dataset_name in self.dataset_name]
+                    [datasets.load_dataset(dataset_name, split=split, download_mode=download_mode) for dataset_name in self.dataset_name]
                 ) for split in [types.SplitType.TRAIN, types.SplitType.VALIDATION]
             })
         elif stage == "test":
             dataset_dict = datasets.DatasetDict({
                 types.SplitType.TEST: datasets.concatenate_datasets(
-                    [datasets.load_dataset(dataset_name, split=types.SplitType.TEST) for dataset_name in self.dataset_name]
+                    [datasets.load_dataset(dataset_name, split=types.SplitType.TEST, download_mode=download_mode) for dataset_name in self.dataset_name]
                 )
             })
         else:
             dataset_dict = datasets.DatasetDict({
                 split: datasets.concatenate_datasets(
-                    [datasets.load_dataset(dataset_name, split=split) for dataset_name in self.dataset_name]
+                    [datasets.load_dataset(dataset_name, split=split, download_mode=download_mode) for dataset_name in self.dataset_name]
                 ) for split in [types.SplitType.TRAIN, types.SplitType.VALIDATION, types.SplitType.TEST]
             })
 
