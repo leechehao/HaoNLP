@@ -1,1 +1,1 @@
-recursive-include src/winlp_conf *.yaml
+recursive-include src/haonlp_conf *.yaml

@@ -5,7 +5,7 @@ import datasets
 import lightning as L
 import transformers
 
-from winlp.task.text_classification import TextClassificationDataModule, TextClassificationModule
+from haonlp.task.text_classification import TextClassificationDataModule, TextClassificationModule
 
 TRAIN = "train"
 TEXTS = "texts"

@@ -1,0 +1,2 @@
+from haonlp.task.text_classification.data import TextClassificationDataModule
+from haonlp.task.text_classification.model import TextClassificationModule

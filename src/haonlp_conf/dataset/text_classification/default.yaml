@@ -1,0 +1,6 @@
+# @package dataset
+defaults:
+  - /dataset/default  # conf/dataset/default.yaml
+
+_target_: haonlp.task.text_classification.TextClassificationDataModule
+label_column_name: labels
