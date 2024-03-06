@@ -140,7 +140,8 @@ class TextClassificationModule(Module):
 
     def on_test_epoch_end(self):
         report = self.build_reports(mode="test")
-        self.logger.experiment.log_text(text=report, artifact_file="test.log", run_id=self.logger.run_id)
+        if self.logger is not None:
+            self.logger.experiment.log_text(text=report, artifact_file="test.log", run_id=self.logger.run_id)
 
     def on_fit_end(self):
         self.train_log_text = "\n".join([f"Epoch {i+1}:\n{report}" for i, report in enumerate(self.validation_reports[1:])])

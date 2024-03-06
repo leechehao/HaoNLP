@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /dataset: boundary_detection/chest_ct_event.yaml
+  - override /dataset: boundary_detection/chest_ct_event
   - override /task: boundary_detection
   - _self_
 

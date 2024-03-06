@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /dataset: text_classification/imdb_sentiment_classification.yaml
+  - override /dataset: text_classification/imdb_sentiment_classification
   - override /task: text_classification
   - _self_
 

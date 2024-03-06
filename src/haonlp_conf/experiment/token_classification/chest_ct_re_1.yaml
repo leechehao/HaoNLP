@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /dataset: token_classification/chest_ct_re.yaml
+  - override /dataset: token_classification/chest_ct_re
   - override /task: token_classification
   - _self_
 

@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /dataset: boundary_detection/chest_ct_tokenize.yaml
+  - override /dataset: boundary_detection/chest_ct_tokenize
   - override /task: boundary_detection
   - _self_
 

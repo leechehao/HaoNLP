@@ -15,7 +15,7 @@ torch.set_float32_matmul_precision("high")
 haonlp_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 default_config_path = os.path.join(haonlp_dir, "../haonlp_conf")
 
-CONFIG_PATH = os.getenv("WINLP_CONFIG_PATH", default_config_path)
+CONFIG_PATH = os.getenv("HAONLP_CONFIG_PATH", default_config_path)
 
 
 @hydra.main(version_base=None, config_path=CONFIG_PATH, config_name="config")
