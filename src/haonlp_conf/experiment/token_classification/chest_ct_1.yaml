@@ -14,10 +14,12 @@ task:
   learning_rate: 3e-4
   warmup_ratio: 0.1
 trainer:
-  max_epochs: 20
+  max_epochs: 10
   logger:
     experiment_name: Chest-CT
     run_name: run_1
     tracking_uri: http://192.168.1.76:1314
 
 test: True
+
+run_id: 203805a1db6748eb8092ee6a8afb50b2

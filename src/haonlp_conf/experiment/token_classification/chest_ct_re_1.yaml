@@ -14,7 +14,7 @@ task:
   learning_rate: 3e-4
   warmup_ratio: 0.1
 trainer:
-  max_epochs: 20
+  max_epochs: 10
   logger:
     experiment_name: Chest-CT-RE
     run_name: run_1
