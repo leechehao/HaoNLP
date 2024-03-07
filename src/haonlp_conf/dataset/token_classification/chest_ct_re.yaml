@@ -1,0 +1,6 @@
+# @package dataset
+defaults:
+  - token_classification/default  # conf/dataset/token_classification/default.yaml
+  
+dataset_name:
+  - /home/bryant/HaoNLP/datasets_hub/token_classification/chest_ct_re/program_data/chest_ct_re

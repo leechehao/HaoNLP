@@ -5,7 +5,7 @@ import datasets
 import transformers
 import lightning as L
 
-from winlp.task.token_classification import TokenClassificationDataModule, TokenClassificationModule
+from haonlp.task.token_classification import TokenClassificationDataModule, TokenClassificationModule
 
 TOKENS = "tokens"
 TRAIN = "train"

@@ -1,0 +1,24 @@
+# @package _global_
+defaults:
+  - override /dataset: text_classification/imdb_sentiment_classification
+  - override /task: text_classification
+  - _self_
+
+dataset:
+  max_length: 512
+  batch_size: 32
+task:
+  pretrained_model_name_or_path: distilbert-base-uncased
+  monitor: val_loss
+  mode: min
+  learning_rate: 2e-5
+trainer:
+  max_epochs: 10
+  logger:
+    experiment_name: IMDb-Text-Classification
+    run_name: distilbert-base-uncased-1
+    tracking_uri: ./mlflow
+
+test: False
+
+run_id: 88c40475cc8047a2b45310e6c2dcc914

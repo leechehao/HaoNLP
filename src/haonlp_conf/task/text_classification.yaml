@@ -1,0 +1,5 @@
+# @package task
+defaults:
+  - default
+
+_target_:  haonlp.task.text_classification.TextClassificationModule

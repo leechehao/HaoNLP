@@ -1,0 +1,23 @@
+# @package _global_
+defaults:
+  - override /dataset: token_classification/chest_ct_ner
+  - override /task: token_classification
+  - _self_
+
+dataset:
+  batch_size: 8
+  max_length: 512
+task:
+  pretrained_model_name_or_path: microsoft/deberta-v3-base
+  monitor: val_f1
+  mode: max
+  learning_rate: 3e-4
+  warmup_ratio: 0.1
+trainer:
+  max_epochs: 10
+  logger:
+    experiment_name: Chest-CT-NER
+    run_name: run_1
+    tracking_uri: http://192.168.1.76:1314
+
+test: True

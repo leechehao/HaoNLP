@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 from datasets import Dataset, DatasetDict
 from torch.utils.data import DataLoader
 
-from winlp.core import DataModule
+from haonlp.core import DataModule
 
 
 class TestDataModule(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestDataModule(unittest.TestCase):
         self.assertEqual(self.data_module._label_list, None)
 
     @patch("datasets.DatasetDict.set_format")
-    @patch("winlp.core.DataModule.process_data")
+    @patch("haonlp.core.DataModule.process_data")
     @patch("datasets.concatenate_datasets")
     @patch("datasets.load_dataset")
     def test_setup(
@@ -136,7 +136,7 @@ class TestDataModule(unittest.TestCase):
 
         self.assertIsInstance(self.data_module.test_dataloader(), DataLoader)
 
-    @patch("winlp.core.DataModule.setup")
+    @patch("haonlp.core.DataModule.setup")
     def test_label_list(self, mock_setup):
         self.data_module.label_list
 

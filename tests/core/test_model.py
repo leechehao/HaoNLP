@@ -7,7 +7,7 @@ import torch
 from lightning.pytorch import Trainer
 from torch.optim import AdamW
 
-from winlp.core import Module
+from haonlp.core import Module
 
 
 class TestModule(unittest.TestCase):
@@ -42,7 +42,7 @@ class TestModule(unittest.TestCase):
         self.assertEqual(self.model.warmup_ratio, 0.0)
         self.assertEqual(self.model._hf_pipeline, None)
 
-    @patch("winlp.core.Module.configure_metrics")
+    @patch("haonlp.core.Module.configure_metrics")
     def test_setup(self, mock_configure_metrics):
         self.model.setup(stage=None)
 
@@ -96,7 +96,7 @@ class TestModule(unittest.TestCase):
         self.assertIsInstance(optimizer[0], AdamW)
         self.assertEqual(scheduler[0], {"scheduler": self.model.scheduler, "interval": "step", "frequency": 1})
 
-    @patch("winlp.core.model.MLflowModelCheckpoint")
+    @patch("haonlp.core.model.MLflowModelCheckpoint")
     def test_configure_callbacks(self, mock_MLflowModelCheckpoint):
         self.model.configure_callbacks()
 
